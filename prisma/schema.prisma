@@ -50,7 +50,7 @@ model User {
   email    String @unique
 }
 
-model Transcation {
+model Transaction {
   id       Int           @id @default(autoincrement())
   type     Type          @default(EXPENSES)
   Amount   Decimal
@@ -74,7 +74,7 @@ model Goal {
   target Int
 }
 
-// model Budget{
+// model Budget {
 //   amount Int
-//   transcations Transcation
+//   transaction Transaction?
 // }
