@@ -13,8 +13,68 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Category {
+  FOOD
+  TRANSPORT
+  BILLS
+  SHOPPING
+  HEALTH
+  ENTERTAINMENT
+  SUBSCRIPTION
+  INCOME
+  OTHER
+}
+
+enum PaymentMethod {
+  CARD
+  TRANSFER
+  CASH
+  USSD
+  POS
+}
+
+enum Desire {
+  NEED
+  WANT
+}
+
+enum Type {
+  EXPENSES
+  INCOME
+}
 
 model User {
-  id    Int    @id @default(autoincrement())
-  email String @unique
+  id       Int    @id @default(autoincrement())
+  name     String
+  password String @unique
+  email    String @unique
 }
+
+model Transcation {
+  id       Int           @id @default(autoincrement())
+  type     Type          @default(EXPENSES)
+  Amount   Decimal
+  Date     DateTime      @default(now())
+  category Category      @default(FOOD)
+  merchant String
+  desire   Desire        @default(NEED)
+  payment  PaymentMethod @default(CARD)
+}
+
+model Journal {
+  id          Int    @id @default(autoincrement())
+  questions   String
+  worthiness  String
+  reminisence String
+}
+
+model Goal {
+  id     Int    @id @default(autoincrement())
+  name   String
+  target Int
+}
+
+// model Budget{
+//   amount Int
+//   transcations Transcation
+// }
