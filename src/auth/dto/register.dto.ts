@@ -12,5 +12,5 @@ export class Register {
     @IsString()
     @MaxLength(12)
     @MinLength(6)
-    passwordHash: string
+    password: string
 }
