@@ -1,0 +1,16 @@
+import { IsDate, IsEmail, IsNumber, IsString, MaxLength, MinLength } from "class-validator"
+
+export class Register {
+    @IsString()
+    name: string
+
+    @IsString()
+    @IsEmail()
+    @MinLength(6)
+    email: string
+
+    @IsString()
+    @MaxLength(12)
+    @MinLength(6)
+    passwordHash: string
+}
