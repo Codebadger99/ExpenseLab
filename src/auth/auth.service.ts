@@ -59,8 +59,6 @@ export class AuthService {
             email: user.email
         })
 
-
-
         return {
             message: "Logged in Successfully",
             accessToken
