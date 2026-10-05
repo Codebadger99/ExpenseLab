@@ -6,11 +6,13 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../src/generated/client"
 }
 
 datasource db {
   provider = "postgresql"
+
+
 }
 
 enum Category {
@@ -38,43 +40,105 @@ enum Desire {
   WANT
 }
 
-enum Type {
-  EXPENSES
+enum TransactionType {
+  EXPENSE
   INCOME
 }
 
+enum Worth {
+  YES
+  SOMEWHAT
+  NO
+}
+
+enum NotificationType {
+  BUDGET_WARNING // crossed 80%
+  BUDGET_EXCEEDED // crossed 100%
+}
+
 model User {
-  id       Int    @id @default(autoincrement())
-  name     String
-  password String @unique
-  email    String @unique
+  id            Int            @id @default(autoincrement())
+  name          String
+  email         String         @unique
+  passwordHash  String
+  transactions  Transaction[]
+  journals      Journal[]
+  goals         Goal[]
+  budgets       Budget[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  notifications Notification[]
 }
 
 model Transaction {
-  id       Int           @id @default(autoincrement())
-  type     Type          @default(EXPENSES)
-  Amount   Decimal
-  Date     DateTime      @default(now())
-  category Category      @default(FOOD)
-  merchant String
-  desire   Desire        @default(NEED)
-  payment  PaymentMethod @default(CARD)
+  id        Int             @id @default(autoincrement())
+  type      TransactionType @default(EXPENSE)
+  amount    Decimal         @db.Decimal(14, 2)
+  date      DateTime        @default(now())
+  category  Category        @default(FOOD)
+  merchant  String?
+  desire    Desire          @default(NEED)
+  payment   PaymentMethod   @default(CARD)
+  userId    Int
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  journal   Journal?
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@index([userId, date])
+  @@index([userId, category])
 }
 
 model Journal {
-  id          Int    @id @default(autoincrement())
-  questions   String
-  worthiness  String
-  reminisence String
+  id            Int         @id @default(autoincrement())
+  why           String
+  worth         Worth?
+  reflection    String?
+  transactionId Int         @unique
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  userId        Int
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
 model Goal {
-  id     Int    @id @default(autoincrement())
-  name   String
-  target Int
+  id        Int      @id @default(autoincrement())
+  name      String
+  target    Int
+  saved     Int      @default(0)
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, name])
 }
 
-// model Budget {
-//   amount Int
-//   transaction Transaction?
-// }
+model Budget {
+  id        Int      @id @default(autoincrement())
+  category  Category
+  limit     Int      @default(0)
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, category])
+}
+
+model Notification {
+  id        Int              @id @default(autoincrement())
+  type      NotificationType
+  title     String
+  message   String
+  category  Category?
+  month     String? 
+  isRead    Boolean          @default(false)
+  userId    Int
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime         @default(now())
+
+  @@unique([userId, type, category, month])
+  @@index([userId, isRead])
+}
