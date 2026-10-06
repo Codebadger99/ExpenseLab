@@ -5,6 +5,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
+import { TransactionService } from './transaction/transaction.service';
+
+import { TransactionController } from './transaction/transaction.controller';
+import { TransactionModule } from './transaction/transaction.module';
+
 
 @Module({
   imports: [
@@ -13,8 +18,9 @@ import { AuthModule } from './auth/auth.module';
     }),
     PrismaModule,
     AuthModule,
+    TransactionModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, TransactionController],
+  providers: [AppService, TransactionService],
 })
 export class AppModule {}
