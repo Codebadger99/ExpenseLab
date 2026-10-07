@@ -110,6 +110,7 @@ export const JournalScalarFieldEnum = {
   worth: 'worth',
   reflection: 'reflection',
   transactionId: 'transactionId',
+  journalStatus: 'journalStatus',
   userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

@@ -55,6 +55,11 @@ enum NotificationType {
   BUDGET_EXCEEDED // crossed 100%
 }
 
+enum JournalStatus {
+  NEEDS_REVIEW
+  WORTH_IT
+}
+
 model User {
   id            Int            @id @default(autoincrement())
   name          String
@@ -90,11 +95,12 @@ model Transaction {
 
 model Journal {
   id            Int         @id @default(autoincrement())
-  why           String
+  why           String?
   worth         Worth?
   reflection    String?
   transactionId Int         @unique
   transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  journalStatus JournalStatus @default(NEEDS_REVIEW)
   userId        Int
   user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt     DateTime    @default(now())

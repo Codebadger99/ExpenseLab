@@ -44,6 +44,7 @@ export type JournalMinAggregateOutputType = {
   worth: $Enums.Worth | null
   reflection: string | null
   transactionId: number | null
+  journalStatus: $Enums.JournalStatus | null
   userId: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -55,6 +56,7 @@ export type JournalMaxAggregateOutputType = {
   worth: $Enums.Worth | null
   reflection: string | null
   transactionId: number | null
+  journalStatus: $Enums.JournalStatus | null
   userId: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -66,6 +68,7 @@ export type JournalCountAggregateOutputType = {
   worth: number
   reflection: number
   transactionId: number
+  journalStatus: number
   userId: number
   createdAt: number
   updatedAt: number
@@ -91,6 +94,7 @@ export type JournalMinAggregateInputType = {
   worth?: true
   reflection?: true
   transactionId?: true
+  journalStatus?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -102,6 +106,7 @@ export type JournalMaxAggregateInputType = {
   worth?: true
   reflection?: true
   transactionId?: true
+  journalStatus?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -113,6 +118,7 @@ export type JournalCountAggregateInputType = {
   worth?: true
   reflection?: true
   transactionId?: true
+  journalStatus?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -207,10 +213,11 @@ export type JournalGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type JournalGroupByOutputType = {
   id: number
-  why: string
+  why: string | null
   worth: $Enums.Worth | null
   reflection: string | null
   transactionId: number
+  journalStatus: $Enums.JournalStatus
   userId: number
   createdAt: Date
   updatedAt: Date
@@ -241,10 +248,11 @@ export type JournalWhereInput = {
   OR?: Prisma.JournalWhereInput[]
   NOT?: Prisma.JournalWhereInput | Prisma.JournalWhereInput[]
   id?: Prisma.IntFilter<"Journal"> | number
-  why?: Prisma.StringFilter<"Journal"> | string
+  why?: Prisma.StringNullableFilter<"Journal"> | string | null
   worth?: Prisma.EnumWorthNullableFilter<"Journal"> | $Enums.Worth | null
   reflection?: Prisma.StringNullableFilter<"Journal"> | string | null
   transactionId?: Prisma.IntFilter<"Journal"> | number
+  journalStatus?: Prisma.EnumJournalStatusFilter<"Journal"> | $Enums.JournalStatus
   userId?: Prisma.IntFilter<"Journal"> | number
   createdAt?: Prisma.DateTimeFilter<"Journal"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Journal"> | Date | string
@@ -254,10 +262,11 @@ export type JournalWhereInput = {
 
 export type JournalOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  why?: Prisma.SortOrder
+  why?: Prisma.SortOrderInput | Prisma.SortOrder
   worth?: Prisma.SortOrderInput | Prisma.SortOrder
   reflection?: Prisma.SortOrderInput | Prisma.SortOrder
   transactionId?: Prisma.SortOrder
+  journalStatus?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -271,9 +280,10 @@ export type JournalWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.JournalWhereInput | Prisma.JournalWhereInput[]
   OR?: Prisma.JournalWhereInput[]
   NOT?: Prisma.JournalWhereInput | Prisma.JournalWhereInput[]
-  why?: Prisma.StringFilter<"Journal"> | string
+  why?: Prisma.StringNullableFilter<"Journal"> | string | null
   worth?: Prisma.EnumWorthNullableFilter<"Journal"> | $Enums.Worth | null
   reflection?: Prisma.StringNullableFilter<"Journal"> | string | null
+  journalStatus?: Prisma.EnumJournalStatusFilter<"Journal"> | $Enums.JournalStatus
   userId?: Prisma.IntFilter<"Journal"> | number
   createdAt?: Prisma.DateTimeFilter<"Journal"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Journal"> | Date | string
@@ -283,10 +293,11 @@ export type JournalWhereUniqueInput = Prisma.AtLeast<{
 
 export type JournalOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  why?: Prisma.SortOrder
+  why?: Prisma.SortOrderInput | Prisma.SortOrder
   worth?: Prisma.SortOrderInput | Prisma.SortOrder
   reflection?: Prisma.SortOrderInput | Prisma.SortOrder
   transactionId?: Prisma.SortOrder
+  journalStatus?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -302,19 +313,21 @@ export type JournalScalarWhereWithAggregatesInput = {
   OR?: Prisma.JournalScalarWhereWithAggregatesInput[]
   NOT?: Prisma.JournalScalarWhereWithAggregatesInput | Prisma.JournalScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Journal"> | number
-  why?: Prisma.StringWithAggregatesFilter<"Journal"> | string
+  why?: Prisma.StringNullableWithAggregatesFilter<"Journal"> | string | null
   worth?: Prisma.EnumWorthNullableWithAggregatesFilter<"Journal"> | $Enums.Worth | null
   reflection?: Prisma.StringNullableWithAggregatesFilter<"Journal"> | string | null
   transactionId?: Prisma.IntWithAggregatesFilter<"Journal"> | number
+  journalStatus?: Prisma.EnumJournalStatusWithAggregatesFilter<"Journal"> | $Enums.JournalStatus
   userId?: Prisma.IntWithAggregatesFilter<"Journal"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Journal"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Journal"> | Date | string
 }
 
 export type JournalCreateInput = {
-  why: string
+  why?: string | null
   worth?: $Enums.Worth | null
   reflection?: string | null
+  journalStatus?: $Enums.JournalStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   transaction: Prisma.TransactionCreateNestedOneWithoutJournalInput
@@ -323,19 +336,21 @@ export type JournalCreateInput = {
 
 export type JournalUncheckedCreateInput = {
   id?: number
-  why: string
+  why?: string | null
   worth?: $Enums.Worth | null
   reflection?: string | null
   transactionId: number
+  journalStatus?: $Enums.JournalStatus
   userId: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type JournalUpdateInput = {
-  why?: Prisma.StringFieldUpdateOperationsInput | string
+  why?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   worth?: Prisma.NullableEnumWorthFieldUpdateOperationsInput | $Enums.Worth | null
   reflection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journalStatus?: Prisma.EnumJournalStatusFieldUpdateOperationsInput | $Enums.JournalStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   transaction?: Prisma.TransactionUpdateOneRequiredWithoutJournalNestedInput
@@ -344,10 +359,11 @@ export type JournalUpdateInput = {
 
 export type JournalUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  why?: Prisma.StringFieldUpdateOperationsInput | string
+  why?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   worth?: Prisma.NullableEnumWorthFieldUpdateOperationsInput | $Enums.Worth | null
   reflection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   transactionId?: Prisma.IntFieldUpdateOperationsInput | number
+  journalStatus?: Prisma.EnumJournalStatusFieldUpdateOperationsInput | $Enums.JournalStatus
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -355,29 +371,32 @@ export type JournalUncheckedUpdateInput = {
 
 export type JournalCreateManyInput = {
   id?: number
-  why: string
+  why?: string | null
   worth?: $Enums.Worth | null
   reflection?: string | null
   transactionId: number
+  journalStatus?: $Enums.JournalStatus
   userId: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type JournalUpdateManyMutationInput = {
-  why?: Prisma.StringFieldUpdateOperationsInput | string
+  why?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   worth?: Prisma.NullableEnumWorthFieldUpdateOperationsInput | $Enums.Worth | null
   reflection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journalStatus?: Prisma.EnumJournalStatusFieldUpdateOperationsInput | $Enums.JournalStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type JournalUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  why?: Prisma.StringFieldUpdateOperationsInput | string
+  why?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   worth?: Prisma.NullableEnumWorthFieldUpdateOperationsInput | $Enums.Worth | null
   reflection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   transactionId?: Prisma.IntFieldUpdateOperationsInput | number
+  journalStatus?: Prisma.EnumJournalStatusFieldUpdateOperationsInput | $Enums.JournalStatus
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -404,6 +423,7 @@ export type JournalCountOrderByAggregateInput = {
   worth?: Prisma.SortOrder
   reflection?: Prisma.SortOrder
   transactionId?: Prisma.SortOrder
+  journalStatus?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -421,6 +441,7 @@ export type JournalMaxOrderByAggregateInput = {
   worth?: Prisma.SortOrder
   reflection?: Prisma.SortOrder
   transactionId?: Prisma.SortOrder
+  journalStatus?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -432,6 +453,7 @@ export type JournalMinOrderByAggregateInput = {
   worth?: Prisma.SortOrder
   reflection?: Prisma.SortOrder
   transactionId?: Prisma.SortOrder
+  journalStatus?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -521,10 +543,15 @@ export type NullableEnumWorthFieldUpdateOperationsInput = {
   set?: $Enums.Worth | null
 }
 
+export type EnumJournalStatusFieldUpdateOperationsInput = {
+  set?: $Enums.JournalStatus
+}
+
 export type JournalCreateWithoutUserInput = {
-  why: string
+  why?: string | null
   worth?: $Enums.Worth | null
   reflection?: string | null
+  journalStatus?: $Enums.JournalStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   transaction: Prisma.TransactionCreateNestedOneWithoutJournalInput
@@ -532,10 +559,11 @@ export type JournalCreateWithoutUserInput = {
 
 export type JournalUncheckedCreateWithoutUserInput = {
   id?: number
-  why: string
+  why?: string | null
   worth?: $Enums.Worth | null
   reflection?: string | null
   transactionId: number
+  journalStatus?: $Enums.JournalStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -571,19 +599,21 @@ export type JournalScalarWhereInput = {
   OR?: Prisma.JournalScalarWhereInput[]
   NOT?: Prisma.JournalScalarWhereInput | Prisma.JournalScalarWhereInput[]
   id?: Prisma.IntFilter<"Journal"> | number
-  why?: Prisma.StringFilter<"Journal"> | string
+  why?: Prisma.StringNullableFilter<"Journal"> | string | null
   worth?: Prisma.EnumWorthNullableFilter<"Journal"> | $Enums.Worth | null
   reflection?: Prisma.StringNullableFilter<"Journal"> | string | null
   transactionId?: Prisma.IntFilter<"Journal"> | number
+  journalStatus?: Prisma.EnumJournalStatusFilter<"Journal"> | $Enums.JournalStatus
   userId?: Prisma.IntFilter<"Journal"> | number
   createdAt?: Prisma.DateTimeFilter<"Journal"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Journal"> | Date | string
 }
 
 export type JournalCreateWithoutTransactionInput = {
-  why: string
+  why?: string | null
   worth?: $Enums.Worth | null
   reflection?: string | null
+  journalStatus?: $Enums.JournalStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutJournalsInput
@@ -591,9 +621,10 @@ export type JournalCreateWithoutTransactionInput = {
 
 export type JournalUncheckedCreateWithoutTransactionInput = {
   id?: number
-  why: string
+  why?: string | null
   worth?: $Enums.Worth | null
   reflection?: string | null
+  journalStatus?: $Enums.JournalStatus
   userId: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -616,9 +647,10 @@ export type JournalUpdateToOneWithWhereWithoutTransactionInput = {
 }
 
 export type JournalUpdateWithoutTransactionInput = {
-  why?: Prisma.StringFieldUpdateOperationsInput | string
+  why?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   worth?: Prisma.NullableEnumWorthFieldUpdateOperationsInput | $Enums.Worth | null
   reflection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journalStatus?: Prisma.EnumJournalStatusFieldUpdateOperationsInput | $Enums.JournalStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutJournalsNestedInput
@@ -626,9 +658,10 @@ export type JournalUpdateWithoutTransactionInput = {
 
 export type JournalUncheckedUpdateWithoutTransactionInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  why?: Prisma.StringFieldUpdateOperationsInput | string
+  why?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   worth?: Prisma.NullableEnumWorthFieldUpdateOperationsInput | $Enums.Worth | null
   reflection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journalStatus?: Prisma.EnumJournalStatusFieldUpdateOperationsInput | $Enums.JournalStatus
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -636,18 +669,20 @@ export type JournalUncheckedUpdateWithoutTransactionInput = {
 
 export type JournalCreateManyUserInput = {
   id?: number
-  why: string
+  why?: string | null
   worth?: $Enums.Worth | null
   reflection?: string | null
   transactionId: number
+  journalStatus?: $Enums.JournalStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type JournalUpdateWithoutUserInput = {
-  why?: Prisma.StringFieldUpdateOperationsInput | string
+  why?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   worth?: Prisma.NullableEnumWorthFieldUpdateOperationsInput | $Enums.Worth | null
   reflection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journalStatus?: Prisma.EnumJournalStatusFieldUpdateOperationsInput | $Enums.JournalStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   transaction?: Prisma.TransactionUpdateOneRequiredWithoutJournalNestedInput
@@ -655,20 +690,22 @@ export type JournalUpdateWithoutUserInput = {
 
 export type JournalUncheckedUpdateWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  why?: Prisma.StringFieldUpdateOperationsInput | string
+  why?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   worth?: Prisma.NullableEnumWorthFieldUpdateOperationsInput | $Enums.Worth | null
   reflection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   transactionId?: Prisma.IntFieldUpdateOperationsInput | number
+  journalStatus?: Prisma.EnumJournalStatusFieldUpdateOperationsInput | $Enums.JournalStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type JournalUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  why?: Prisma.StringFieldUpdateOperationsInput | string
+  why?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   worth?: Prisma.NullableEnumWorthFieldUpdateOperationsInput | $Enums.Worth | null
   reflection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   transactionId?: Prisma.IntFieldUpdateOperationsInput | number
+  journalStatus?: Prisma.EnumJournalStatusFieldUpdateOperationsInput | $Enums.JournalStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -681,6 +718,7 @@ export type JournalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   worth?: boolean
   reflection?: boolean
   transactionId?: boolean
+  journalStatus?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -694,6 +732,7 @@ export type JournalSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   worth?: boolean
   reflection?: boolean
   transactionId?: boolean
+  journalStatus?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -707,6 +746,7 @@ export type JournalSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   worth?: boolean
   reflection?: boolean
   transactionId?: boolean
+  journalStatus?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -720,12 +760,13 @@ export type JournalSelectScalar = {
   worth?: boolean
   reflection?: boolean
   transactionId?: boolean
+  journalStatus?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type JournalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "why" | "worth" | "reflection" | "transactionId" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["journal"]>
+export type JournalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "why" | "worth" | "reflection" | "transactionId" | "journalStatus" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["journal"]>
 export type JournalInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   transaction?: boolean | Prisma.TransactionDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -747,10 +788,11 @@ export type $JournalPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
-    why: string
+    why: string | null
     worth: $Enums.Worth | null
     reflection: string | null
     transactionId: number
+    journalStatus: $Enums.JournalStatus
     userId: number
     createdAt: Date
     updatedAt: Date
@@ -1184,6 +1226,7 @@ export interface JournalFieldRefs {
   readonly worth: Prisma.FieldRef<"Journal", 'Worth'>
   readonly reflection: Prisma.FieldRef<"Journal", 'String'>
   readonly transactionId: Prisma.FieldRef<"Journal", 'Int'>
+  readonly journalStatus: Prisma.FieldRef<"Journal", 'JournalStatus'>
   readonly userId: Prisma.FieldRef<"Journal", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Journal", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Journal", 'DateTime'>

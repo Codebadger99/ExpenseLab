@@ -65,3 +65,11 @@ export const NotificationType = {
 } as const
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
+export const JournalStatus = {
+  NEEDS_REVIEW: 'NEEDS_REVIEW',
+  WORTH_IT: 'WORTH_IT'
+} as const
+
+export type JournalStatus = (typeof JournalStatus)[keyof typeof JournalStatus]

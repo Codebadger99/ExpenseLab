@@ -940,6 +940,7 @@ export const JournalScalarFieldEnum = {
   worth: 'worth',
   reflection: 'reflection',
   transactionId: 'transactionId',
+  journalStatus: 'journalStatus',
   userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1141,6 +1142,20 @@ export type EnumWorthFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMode
  * Reference to a field of type 'Worth[]'
  */
 export type ListEnumWorthFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Worth[]'>
+    
+
+
+/**
+ * Reference to a field of type 'JournalStatus'
+ */
+export type EnumJournalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JournalStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'JournalStatus[]'
+ */
+export type ListEnumJournalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JournalStatus[]'>
     
 
 

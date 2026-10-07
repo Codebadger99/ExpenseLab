@@ -348,7 +348,7 @@ export type TransactionScalarWhereWithAggregatesInput = {
 }
 
 export type TransactionCreateInput = {
-  type?: $Enums.TransactionType
+  type: $Enums.TransactionType
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Date | string
   category?: $Enums.Category
@@ -363,7 +363,7 @@ export type TransactionCreateInput = {
 
 export type TransactionUncheckedCreateInput = {
   id?: number
-  type?: $Enums.TransactionType
+  type: $Enums.TransactionType
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Date | string
   category?: $Enums.Category
@@ -407,7 +407,7 @@ export type TransactionUncheckedUpdateInput = {
 
 export type TransactionCreateManyInput = {
   id?: number
-  type?: $Enums.TransactionType
+  type: $Enums.TransactionType
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Date | string
   category?: $Enums.Category
@@ -599,7 +599,7 @@ export type TransactionUpdateOneRequiredWithoutJournalNestedInput = {
 }
 
 export type TransactionCreateWithoutUserInput = {
-  type?: $Enums.TransactionType
+  type: $Enums.TransactionType
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Date | string
   category?: $Enums.Category
@@ -613,7 +613,7 @@ export type TransactionCreateWithoutUserInput = {
 
 export type TransactionUncheckedCreateWithoutUserInput = {
   id?: number
-  type?: $Enums.TransactionType
+  type: $Enums.TransactionType
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Date | string
   category?: $Enums.Category
@@ -669,7 +669,7 @@ export type TransactionScalarWhereInput = {
 }
 
 export type TransactionCreateWithoutJournalInput = {
-  type?: $Enums.TransactionType
+  type: $Enums.TransactionType
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Date | string
   category?: $Enums.Category
@@ -683,7 +683,7 @@ export type TransactionCreateWithoutJournalInput = {
 
 export type TransactionUncheckedCreateWithoutJournalInput = {
   id?: number
-  type?: $Enums.TransactionType
+  type: $Enums.TransactionType
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Date | string
   category?: $Enums.Category
@@ -740,7 +740,7 @@ export type TransactionUncheckedUpdateWithoutJournalInput = {
 
 export type TransactionCreateManyUserInput = {
   id?: number
-  type?: $Enums.TransactionType
+  type: $Enums.TransactionType
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Date | string
   category?: $Enums.Category
