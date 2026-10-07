@@ -23,7 +23,6 @@ enum Category {
   HEALTH
   ENTERTAINMENT
   SUBSCRIPTION
-  INCOME
   OTHER
 }
 
@@ -72,7 +71,7 @@ model User {
 
 model Transaction {
   id        Int             @id @default(autoincrement())
-  type      TransactionType @default(EXPENSE)
+  type      TransactionType 
   amount    Decimal         @db.Decimal(14, 2)
   date      DateTime        @default(now())
   category  Category        @default(FOOD)
