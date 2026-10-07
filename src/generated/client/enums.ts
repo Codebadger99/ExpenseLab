@@ -17,7 +17,6 @@ export const Category = {
   HEALTH: 'HEALTH',
   ENTERTAINMENT: 'ENTERTAINMENT',
   SUBSCRIPTION: 'SUBSCRIPTION',
-  INCOME: 'INCOME',
   OTHER: 'OTHER'
 } as const
 
