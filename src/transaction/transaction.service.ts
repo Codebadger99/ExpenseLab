@@ -54,6 +54,13 @@ export class TransactionService {
                 userId
             }
         })
+
+        await this.prisma.journal.create({
+            data: {
+                userId,
+                transactionId: createTransaction.id
+            }
+        })
         return createTransaction
     }
 
