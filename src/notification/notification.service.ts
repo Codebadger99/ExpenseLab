@@ -46,7 +46,10 @@ export class NotificationService {
             ],
             skipDuplicates: true, // the @@unique rule stops the same alert being created twice
         });
+
     }
+
+
 
     findAll(userId: number, unreadOnly = false) {
         return this.prisma.notification.findMany({

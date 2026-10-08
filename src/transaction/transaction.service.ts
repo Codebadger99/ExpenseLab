@@ -3,10 +3,11 @@ import { PrismaService } from '../prisma/prisma.service';
 import { createTransaction } from './dto/create-transaction.dto';
 import { TransactionType } from '../generated/client/enums';
 import { UpdateTransaction } from './dto/update-transaction.dto';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class TransactionService {
-    constructor(private prisma: PrismaService) { }
+    constructor(private prisma: PrismaService, private readonly notificationService: NotificationService) { }
 
     async readAllTransaction(userId: number) {
         const allTransaction = await this.prisma.transaction.findMany({
@@ -73,6 +74,16 @@ export class TransactionService {
                 transactionId: createTransaction.id
             }
         })
+        if (
+            createTransaction.type === TransactionType.EXPENSE &&
+            createTransaction.category
+        ) {
+            await this.notificationService.checkBudget(
+                userId,
+                createTransaction.category,
+                createTransaction.date,
+            );
+        }
         return createTransaction
     }
 
