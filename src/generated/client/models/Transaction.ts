@@ -44,6 +44,7 @@ export type TransactionMinAggregateOutputType = {
   amount: runtime.Decimal | null
   date: Date | null
   category: $Enums.Category | null
+  incomeSources: $Enums.IncomeSource | null
   merchant: string | null
   desire: $Enums.Desire | null
   payment: $Enums.PaymentMethod | null
@@ -58,6 +59,7 @@ export type TransactionMaxAggregateOutputType = {
   amount: runtime.Decimal | null
   date: Date | null
   category: $Enums.Category | null
+  incomeSources: $Enums.IncomeSource | null
   merchant: string | null
   desire: $Enums.Desire | null
   payment: $Enums.PaymentMethod | null
@@ -72,6 +74,7 @@ export type TransactionCountAggregateOutputType = {
   amount: number
   date: number
   category: number
+  incomeSources: number
   merchant: number
   desire: number
   payment: number
@@ -100,6 +103,7 @@ export type TransactionMinAggregateInputType = {
   amount?: true
   date?: true
   category?: true
+  incomeSources?: true
   merchant?: true
   desire?: true
   payment?: true
@@ -114,6 +118,7 @@ export type TransactionMaxAggregateInputType = {
   amount?: true
   date?: true
   category?: true
+  incomeSources?: true
   merchant?: true
   desire?: true
   payment?: true
@@ -128,6 +133,7 @@ export type TransactionCountAggregateInputType = {
   amount?: true
   date?: true
   category?: true
+  incomeSources?: true
   merchant?: true
   desire?: true
   payment?: true
@@ -229,6 +235,7 @@ export type TransactionGroupByOutputType = {
   amount: runtime.Decimal
   date: Date
   category: $Enums.Category
+  incomeSources: $Enums.IncomeSource
   merchant: string | null
   desire: $Enums.Desire
   payment: $Enums.PaymentMethod
@@ -266,6 +273,7 @@ export type TransactionWhereInput = {
   amount?: Prisma.DecimalFilter<"Transaction"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Prisma.DateTimeFilter<"Transaction"> | Date | string
   category?: Prisma.EnumCategoryFilter<"Transaction"> | $Enums.Category
+  incomeSources?: Prisma.EnumIncomeSourceFilter<"Transaction"> | $Enums.IncomeSource
   merchant?: Prisma.StringNullableFilter<"Transaction"> | string | null
   desire?: Prisma.EnumDesireFilter<"Transaction"> | $Enums.Desire
   payment?: Prisma.EnumPaymentMethodFilter<"Transaction"> | $Enums.PaymentMethod
@@ -282,6 +290,7 @@ export type TransactionOrderByWithRelationInput = {
   amount?: Prisma.SortOrder
   date?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  incomeSources?: Prisma.SortOrder
   merchant?: Prisma.SortOrderInput | Prisma.SortOrder
   desire?: Prisma.SortOrder
   payment?: Prisma.SortOrder
@@ -301,6 +310,7 @@ export type TransactionWhereUniqueInput = Prisma.AtLeast<{
   amount?: Prisma.DecimalFilter<"Transaction"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Prisma.DateTimeFilter<"Transaction"> | Date | string
   category?: Prisma.EnumCategoryFilter<"Transaction"> | $Enums.Category
+  incomeSources?: Prisma.EnumIncomeSourceFilter<"Transaction"> | $Enums.IncomeSource
   merchant?: Prisma.StringNullableFilter<"Transaction"> | string | null
   desire?: Prisma.EnumDesireFilter<"Transaction"> | $Enums.Desire
   payment?: Prisma.EnumPaymentMethodFilter<"Transaction"> | $Enums.PaymentMethod
@@ -317,6 +327,7 @@ export type TransactionOrderByWithAggregationInput = {
   amount?: Prisma.SortOrder
   date?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  incomeSources?: Prisma.SortOrder
   merchant?: Prisma.SortOrderInput | Prisma.SortOrder
   desire?: Prisma.SortOrder
   payment?: Prisma.SortOrder
@@ -339,6 +350,7 @@ export type TransactionScalarWhereWithAggregatesInput = {
   amount?: Prisma.DecimalWithAggregatesFilter<"Transaction"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Prisma.DateTimeWithAggregatesFilter<"Transaction"> | Date | string
   category?: Prisma.EnumCategoryWithAggregatesFilter<"Transaction"> | $Enums.Category
+  incomeSources?: Prisma.EnumIncomeSourceWithAggregatesFilter<"Transaction"> | $Enums.IncomeSource
   merchant?: Prisma.StringNullableWithAggregatesFilter<"Transaction"> | string | null
   desire?: Prisma.EnumDesireWithAggregatesFilter<"Transaction"> | $Enums.Desire
   payment?: Prisma.EnumPaymentMethodWithAggregatesFilter<"Transaction"> | $Enums.PaymentMethod
@@ -352,6 +364,7 @@ export type TransactionCreateInput = {
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Date | string
   category?: $Enums.Category
+  incomeSources?: $Enums.IncomeSource
   merchant?: string | null
   desire?: $Enums.Desire
   payment?: $Enums.PaymentMethod
@@ -367,6 +380,7 @@ export type TransactionUncheckedCreateInput = {
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Date | string
   category?: $Enums.Category
+  incomeSources?: $Enums.IncomeSource
   merchant?: string | null
   desire?: $Enums.Desire
   payment?: $Enums.PaymentMethod
@@ -381,6 +395,7 @@ export type TransactionUpdateInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.EnumCategoryFieldUpdateOperationsInput | $Enums.Category
+  incomeSources?: Prisma.EnumIncomeSourceFieldUpdateOperationsInput | $Enums.IncomeSource
   merchant?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   desire?: Prisma.EnumDesireFieldUpdateOperationsInput | $Enums.Desire
   payment?: Prisma.EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
@@ -396,6 +411,7 @@ export type TransactionUncheckedUpdateInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.EnumCategoryFieldUpdateOperationsInput | $Enums.Category
+  incomeSources?: Prisma.EnumIncomeSourceFieldUpdateOperationsInput | $Enums.IncomeSource
   merchant?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   desire?: Prisma.EnumDesireFieldUpdateOperationsInput | $Enums.Desire
   payment?: Prisma.EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
@@ -411,6 +427,7 @@ export type TransactionCreateManyInput = {
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Date | string
   category?: $Enums.Category
+  incomeSources?: $Enums.IncomeSource
   merchant?: string | null
   desire?: $Enums.Desire
   payment?: $Enums.PaymentMethod
@@ -424,6 +441,7 @@ export type TransactionUpdateManyMutationInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.EnumCategoryFieldUpdateOperationsInput | $Enums.Category
+  incomeSources?: Prisma.EnumIncomeSourceFieldUpdateOperationsInput | $Enums.IncomeSource
   merchant?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   desire?: Prisma.EnumDesireFieldUpdateOperationsInput | $Enums.Desire
   payment?: Prisma.EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
@@ -437,6 +455,7 @@ export type TransactionUncheckedUpdateManyInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.EnumCategoryFieldUpdateOperationsInput | $Enums.Category
+  incomeSources?: Prisma.EnumIncomeSourceFieldUpdateOperationsInput | $Enums.IncomeSource
   merchant?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   desire?: Prisma.EnumDesireFieldUpdateOperationsInput | $Enums.Desire
   payment?: Prisma.EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
@@ -461,6 +480,7 @@ export type TransactionCountOrderByAggregateInput = {
   amount?: Prisma.SortOrder
   date?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  incomeSources?: Prisma.SortOrder
   merchant?: Prisma.SortOrder
   desire?: Prisma.SortOrder
   payment?: Prisma.SortOrder
@@ -481,6 +501,7 @@ export type TransactionMaxOrderByAggregateInput = {
   amount?: Prisma.SortOrder
   date?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  incomeSources?: Prisma.SortOrder
   merchant?: Prisma.SortOrder
   desire?: Prisma.SortOrder
   payment?: Prisma.SortOrder
@@ -495,6 +516,7 @@ export type TransactionMinOrderByAggregateInput = {
   amount?: Prisma.SortOrder
   date?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  incomeSources?: Prisma.SortOrder
   merchant?: Prisma.SortOrder
   desire?: Prisma.SortOrder
   payment?: Prisma.SortOrder
@@ -572,6 +594,10 @@ export type EnumCategoryFieldUpdateOperationsInput = {
   set?: $Enums.Category
 }
 
+export type EnumIncomeSourceFieldUpdateOperationsInput = {
+  set?: $Enums.IncomeSource
+}
+
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
 }
@@ -603,6 +629,7 @@ export type TransactionCreateWithoutUserInput = {
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Date | string
   category?: $Enums.Category
+  incomeSources?: $Enums.IncomeSource
   merchant?: string | null
   desire?: $Enums.Desire
   payment?: $Enums.PaymentMethod
@@ -617,6 +644,7 @@ export type TransactionUncheckedCreateWithoutUserInput = {
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Date | string
   category?: $Enums.Category
+  incomeSources?: $Enums.IncomeSource
   merchant?: string | null
   desire?: $Enums.Desire
   payment?: $Enums.PaymentMethod
@@ -660,6 +688,7 @@ export type TransactionScalarWhereInput = {
   amount?: Prisma.DecimalFilter<"Transaction"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Prisma.DateTimeFilter<"Transaction"> | Date | string
   category?: Prisma.EnumCategoryFilter<"Transaction"> | $Enums.Category
+  incomeSources?: Prisma.EnumIncomeSourceFilter<"Transaction"> | $Enums.IncomeSource
   merchant?: Prisma.StringNullableFilter<"Transaction"> | string | null
   desire?: Prisma.EnumDesireFilter<"Transaction"> | $Enums.Desire
   payment?: Prisma.EnumPaymentMethodFilter<"Transaction"> | $Enums.PaymentMethod
@@ -673,6 +702,7 @@ export type TransactionCreateWithoutJournalInput = {
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Date | string
   category?: $Enums.Category
+  incomeSources?: $Enums.IncomeSource
   merchant?: string | null
   desire?: $Enums.Desire
   payment?: $Enums.PaymentMethod
@@ -687,6 +717,7 @@ export type TransactionUncheckedCreateWithoutJournalInput = {
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Date | string
   category?: $Enums.Category
+  incomeSources?: $Enums.IncomeSource
   merchant?: string | null
   desire?: $Enums.Desire
   payment?: $Enums.PaymentMethod
@@ -716,6 +747,7 @@ export type TransactionUpdateWithoutJournalInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.EnumCategoryFieldUpdateOperationsInput | $Enums.Category
+  incomeSources?: Prisma.EnumIncomeSourceFieldUpdateOperationsInput | $Enums.IncomeSource
   merchant?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   desire?: Prisma.EnumDesireFieldUpdateOperationsInput | $Enums.Desire
   payment?: Prisma.EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
@@ -730,6 +762,7 @@ export type TransactionUncheckedUpdateWithoutJournalInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.EnumCategoryFieldUpdateOperationsInput | $Enums.Category
+  incomeSources?: Prisma.EnumIncomeSourceFieldUpdateOperationsInput | $Enums.IncomeSource
   merchant?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   desire?: Prisma.EnumDesireFieldUpdateOperationsInput | $Enums.Desire
   payment?: Prisma.EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
@@ -744,6 +777,7 @@ export type TransactionCreateManyUserInput = {
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Date | string
   category?: $Enums.Category
+  incomeSources?: $Enums.IncomeSource
   merchant?: string | null
   desire?: $Enums.Desire
   payment?: $Enums.PaymentMethod
@@ -756,6 +790,7 @@ export type TransactionUpdateWithoutUserInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.EnumCategoryFieldUpdateOperationsInput | $Enums.Category
+  incomeSources?: Prisma.EnumIncomeSourceFieldUpdateOperationsInput | $Enums.IncomeSource
   merchant?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   desire?: Prisma.EnumDesireFieldUpdateOperationsInput | $Enums.Desire
   payment?: Prisma.EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
@@ -770,6 +805,7 @@ export type TransactionUncheckedUpdateWithoutUserInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.EnumCategoryFieldUpdateOperationsInput | $Enums.Category
+  incomeSources?: Prisma.EnumIncomeSourceFieldUpdateOperationsInput | $Enums.IncomeSource
   merchant?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   desire?: Prisma.EnumDesireFieldUpdateOperationsInput | $Enums.Desire
   payment?: Prisma.EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
@@ -784,6 +820,7 @@ export type TransactionUncheckedUpdateManyWithoutUserInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.EnumCategoryFieldUpdateOperationsInput | $Enums.Category
+  incomeSources?: Prisma.EnumIncomeSourceFieldUpdateOperationsInput | $Enums.IncomeSource
   merchant?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   desire?: Prisma.EnumDesireFieldUpdateOperationsInput | $Enums.Desire
   payment?: Prisma.EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
@@ -799,6 +836,7 @@ export type TransactionSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   amount?: boolean
   date?: boolean
   category?: boolean
+  incomeSources?: boolean
   merchant?: boolean
   desire?: boolean
   payment?: boolean
@@ -815,6 +853,7 @@ export type TransactionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   amount?: boolean
   date?: boolean
   category?: boolean
+  incomeSources?: boolean
   merchant?: boolean
   desire?: boolean
   payment?: boolean
@@ -830,6 +869,7 @@ export type TransactionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   amount?: boolean
   date?: boolean
   category?: boolean
+  incomeSources?: boolean
   merchant?: boolean
   desire?: boolean
   payment?: boolean
@@ -845,6 +885,7 @@ export type TransactionSelectScalar = {
   amount?: boolean
   date?: boolean
   category?: boolean
+  incomeSources?: boolean
   merchant?: boolean
   desire?: boolean
   payment?: boolean
@@ -853,7 +894,7 @@ export type TransactionSelectScalar = {
   updatedAt?: boolean
 }
 
-export type TransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "amount" | "date" | "category" | "merchant" | "desire" | "payment" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["transaction"]>
+export type TransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "amount" | "date" | "category" | "incomeSources" | "merchant" | "desire" | "payment" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["transaction"]>
 export type TransactionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   journal?: boolean | Prisma.Transaction$journalArgs<ExtArgs>
@@ -877,6 +918,7 @@ export type $TransactionPayload<ExtArgs extends runtime.Types.Extensions.Interna
     amount: runtime.Decimal
     date: Date
     category: $Enums.Category
+    incomeSources: $Enums.IncomeSource
     merchant: string | null
     desire: $Enums.Desire
     payment: $Enums.PaymentMethod
@@ -1313,6 +1355,7 @@ export interface TransactionFieldRefs {
   readonly amount: Prisma.FieldRef<"Transaction", 'Decimal'>
   readonly date: Prisma.FieldRef<"Transaction", 'DateTime'>
   readonly category: Prisma.FieldRef<"Transaction", 'Category'>
+  readonly incomeSources: Prisma.FieldRef<"Transaction", 'IncomeSource'>
   readonly merchant: Prisma.FieldRef<"Transaction", 'String'>
   readonly desire: Prisma.FieldRef<"Transaction", 'Desire'>
   readonly payment: Prisma.FieldRef<"Transaction", 'PaymentMethod'>

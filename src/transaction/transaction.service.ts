@@ -11,23 +11,23 @@ export class TransactionService {
     async readAllTransaction(userId: number) {
         const allTransaction = await this.prisma.transaction.findMany({
             where: { userId },
-            orderBy: {date: 'desc'}
+            orderBy: { date: 'desc' }
         })
 
-        if(!allTransaction) throw new NotFoundException('Empty Transaction')
+        if (!allTransaction) throw new NotFoundException('Empty Transaction')
 
         return allTransaction
     }
 
-    async readOneTransaction(id: number, userId:number) {
+    async readOneTransaction(id: number, userId: number) {
         const findOneTransaction = await this.prisma.transaction.findUnique({
             where: {
-                id: id, 
+                id: id,
                 userId
             }
         })
 
-        if(!findOneTransaction) throw new NotFoundException('Transactions not found')
+        if (!findOneTransaction) throw new NotFoundException('Transactions not found')
 
         return findOneTransaction
     }
@@ -38,8 +38,20 @@ export class TransactionService {
         if (type === TransactionType.EXPENSE && !create.category) {
             throw new BadRequestException('Expenses need a category');
         }
-        if (type === TransactionType.INCOME && create.category) {
-            throw new BadRequestException('Income does not take a category');
+        if (create.type === 'INCOME' && !create.incomeSource) {
+            throw new BadRequestException('Income source is required for income');
+        }
+
+        if (create.type === 'EXPENSE' && create.incomeSource) {
+            throw new BadRequestException(
+                'Income source cannot be used for expenses',
+            );
+        }
+
+        if (create.type === 'INCOME' && create.category) {
+            throw new BadRequestException(
+                'Category cannot be used for income',
+            );
         }
 
         const createTransaction = await this.prisma.transaction.create({
@@ -76,7 +88,7 @@ export class TransactionService {
             }
         })
 
-        if(!updateTransaction) throw new NotFoundException('Transactions not found')
+        if (!updateTransaction) throw new NotFoundException('Transactions not found')
 
         return updateTransaction
     }
@@ -89,7 +101,7 @@ export class TransactionService {
             }
         })
 
-        if(!deleteOne) throw new NotFoundException('You dont have any transaction to delete')
+        if (!deleteOne) throw new NotFoundException('You dont have any transaction to delete')
 
         return deleteOne
     }

@@ -1,27 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+
 import { PrismaService } from '../prisma/prisma.service';
+import { Category } from '../generated/client/enums';
 import { UpdatedBudget } from './dto/update-budget.dto';
 
 @Injectable()
 export class BudgetService {
-    constructor(private readonly prisma: PrismaService){}
+  constructor(
+    private readonly prisma: PrismaService,
+  ) {}
 
-    
+  // Get all budgets belonging to the logged-in user
+  async readAllBudget(userId: number) {
+    return this.prisma.budget.findMany({
+      where: {
+        userId,
+      },
+      orderBy: {
+        category: 'asc',
+      },
+    });
+  }
 
-    updateBudget(id: number, userId: number, updated: UpdatedBudget){
-       const budgetUpdated = this.prisma.budget.update({
-        where: {
-            id: id,
-            userId
+  // Update the limit of an existing default category
+    async updateBudget(
+    userId: number,
+    updated: UpdatedBudget,
+  ) {
+    return this.prisma.budget.upsert({
+      where: {
+        userId_category: {
+          userId,
+          category: updated.category,
         },
+      },
 
-        data: {
-            category: updated.category,
-            limit: updated.limit,
-            userId
-        }
-       })
+      update: {
+        limit: updated.limit,
+      },
 
-       return budgetUpdated
-    }
+      create: {
+        userId,
+        category: updated.category,
+        limit: updated.limit,
+      },
+    });
+  }
 }

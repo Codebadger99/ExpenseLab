@@ -1,5 +1,5 @@
 import { IsDate, IsDateString, IsEnum, IsNumber, IsOptional, Matches, MaxLength } from "class-validator";
-import { TransactionType, Category, Desire, PaymentMethod } from "../../generated/client/enums";
+import { TransactionType, Category, Desire, PaymentMethod, IncomeSource } from "../../generated/client/enums";
 
 export class createTransaction{
     @IsOptional()
@@ -19,6 +19,10 @@ export class createTransaction{
     @IsOptional()
     @IsEnum(Category)
     category?: Category;
+
+    @IsOptional()
+    @IsEnum(IncomeSource)
+    incomeSource: IncomeSource
 
     @IsOptional()
     @MaxLength(80)

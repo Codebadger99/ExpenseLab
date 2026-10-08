@@ -73,3 +73,13 @@ export const JournalStatus = {
 } as const
 
 export type JournalStatus = (typeof JournalStatus)[keyof typeof JournalStatus]
+
+
+export const IncomeSource = {
+  SALARY: 'SALARY',
+  BUSINESS: 'BUSINESS',
+  GIFT: 'GIFT',
+  OTHER: 'OTHER'
+} as const
+
+export type IncomeSource = (typeof IncomeSource)[keyof typeof IncomeSource]

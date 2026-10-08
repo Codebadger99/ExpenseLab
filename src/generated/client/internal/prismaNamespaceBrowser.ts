@@ -93,6 +93,7 @@ export const TransactionScalarFieldEnum = {
   amount: 'amount',
   date: 'date',
   category: 'category',
+  incomeSources: 'incomeSources',
   merchant: 'merchant',
   desire: 'desire',
   payment: 'payment',

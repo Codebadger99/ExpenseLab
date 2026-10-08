@@ -124,6 +124,13 @@ export type EnumCategoryFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumCategoryFilter<$PrismaModel> | $Enums.Category
 }
 
+export type EnumIncomeSourceFilter<$PrismaModel = never> = {
+  equals?: $Enums.IncomeSource | Prisma.EnumIncomeSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.IncomeSource[] | Prisma.ListEnumIncomeSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.IncomeSource[] | Prisma.ListEnumIncomeSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumIncomeSourceFilter<$PrismaModel> | $Enums.IncomeSource
+}
+
 export type StringNullableFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
@@ -192,6 +199,16 @@ export type EnumCategoryWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumCategoryFilter<$PrismaModel>
   _max?: Prisma.NestedEnumCategoryFilter<$PrismaModel>
+}
+
+export type EnumIncomeSourceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.IncomeSource | Prisma.EnumIncomeSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.IncomeSource[] | Prisma.ListEnumIncomeSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.IncomeSource[] | Prisma.ListEnumIncomeSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumIncomeSourceWithAggregatesFilter<$PrismaModel> | $Enums.IncomeSource
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumIncomeSourceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumIncomeSourceFilter<$PrismaModel>
 }
 
 export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -432,6 +449,13 @@ export type NestedEnumCategoryFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumCategoryFilter<$PrismaModel> | $Enums.Category
 }
 
+export type NestedEnumIncomeSourceFilter<$PrismaModel = never> = {
+  equals?: $Enums.IncomeSource | Prisma.EnumIncomeSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.IncomeSource[] | Prisma.ListEnumIncomeSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.IncomeSource[] | Prisma.ListEnumIncomeSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumIncomeSourceFilter<$PrismaModel> | $Enums.IncomeSource
+}
+
 export type NestedStringNullableFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
@@ -494,6 +518,16 @@ export type NestedEnumCategoryWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumCategoryFilter<$PrismaModel>
   _max?: Prisma.NestedEnumCategoryFilter<$PrismaModel>
+}
+
+export type NestedEnumIncomeSourceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.IncomeSource | Prisma.EnumIncomeSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.IncomeSource[] | Prisma.ListEnumIncomeSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.IncomeSource[] | Prisma.ListEnumIncomeSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumIncomeSourceWithAggregatesFilter<$PrismaModel> | $Enums.IncomeSource
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumIncomeSourceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumIncomeSourceFilter<$PrismaModel>
 }
 
 export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {

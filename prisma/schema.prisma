@@ -58,6 +58,13 @@ enum JournalStatus {
   WORTH_IT
 }
 
+enum IncomeSource {
+  SALARY
+  BUSINESS
+  GIFT
+  OTHER
+}
+
 model User {
   id            Int            @id @default(autoincrement())
   name          String
@@ -73,36 +80,37 @@ model User {
 }
 
 model Transaction {
-  id        Int             @id @default(autoincrement())
-  type      TransactionType 
-  amount    Decimal         @db.Decimal(14, 2)
-  date      DateTime        @default(now())
-  category  Category        @default(FOOD)
-  merchant  String?
-  desire    Desire          @default(NEED)
-  payment   PaymentMethod   @default(CARD)
-  userId    Int
-  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  journal   Journal?
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
+  id            Int             @id @default(autoincrement())
+  type          TransactionType
+  amount        Decimal         @db.Decimal(14, 2)
+  date          DateTime        @default(now())
+  category      Category        @default(FOOD)
+  incomeSources IncomeSource    @default(BUSINESS)
+  merchant      String?
+  desire        Desire          @default(NEED)
+  payment       PaymentMethod   @default(CARD)
+  userId        Int
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  journal       Journal?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 
   @@index([userId, date])
   @@index([userId, category])
 }
 
 model Journal {
-  id            Int         @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   why           String?
   worth         Worth?
   reflection    String?
-  transactionId Int         @unique
-  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  transactionId Int           @unique
+  transaction   Transaction   @relation(fields: [transactionId], references: [id], onDelete: Cascade)
   journalStatus JournalStatus @default(NEEDS_REVIEW)
   userId        Int
-  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 model Goal {
@@ -136,7 +144,7 @@ model Notification {
   title     String
   message   String
   category  Category?
-  month     String? 
+  month     String?
   isRead    Boolean          @default(false)
   userId    Int
   user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)

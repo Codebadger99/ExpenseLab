@@ -923,6 +923,7 @@ export const TransactionScalarFieldEnum = {
   amount: 'amount',
   date: 'date',
   category: 'category',
+  incomeSources: 'incomeSources',
   merchant: 'merchant',
   desire: 'desire',
   payment: 'payment',
@@ -1100,6 +1101,20 @@ export type EnumCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
  * Reference to a field of type 'Category[]'
  */
 export type ListEnumCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Category[]'>
+    
+
+
+/**
+ * Reference to a field of type 'IncomeSource'
+ */
+export type EnumIncomeSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IncomeSource'>
+    
+
+
+/**
+ * Reference to a field of type 'IncomeSource[]'
+ */
+export type ListEnumIncomeSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IncomeSource[]'>
     
 
 

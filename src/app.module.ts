@@ -12,6 +12,8 @@ import { TransactionModule } from './transaction/transaction.module';
 import { BudgetModule } from './budget/budget.module';
 import { GoalModule } from './goal/goal.module';
 import { JournalModule } from './journal/journal.module';
+import { AnalyticsModule } from './analytics/analytics.module';
+import { NotificationModule } from './notification/notification.module';
 
 
 @Module({
@@ -25,6 +27,8 @@ import { JournalModule } from './journal/journal.module';
     BudgetModule,
     GoalModule,
     JournalModule,
+    AnalyticsModule,
+    NotificationModule,
   ],
   controllers: [AppController, TransactionController],
   providers: [AppService, TransactionService],
