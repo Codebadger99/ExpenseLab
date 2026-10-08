@@ -22,23 +22,37 @@ export class AuthService {
 
         const Hashedpassword = await bcrypt.hash(register.password, 10)
 
-        const user = this.prisma.user.create({
+        const user = await this.prisma.user.create({
             data: {
                 name: register.name,
                 email: register.email,
-                passwordHash: Hashedpassword
+                passwordHash: Hashedpassword,
             },
-
             select: {
                 id: true,
                 name: true,
                 email: true,
+                onboardingCompleted: true,
                 createdAt: true,
                 updatedAt: true,
             },
         })
 
-        return user
+        const accessToken = await this.jwt.signAsync({
+            sub: user.id,
+            email: user.email,
+        })
+
+        return {
+            message: 'Registered successfully',
+            accessToken,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                onboardingCompleted: user.onboardingCompleted,
+            },
+        }
     }
 
     async Login(login: Login) {
@@ -61,7 +75,13 @@ export class AuthService {
 
         return {
             message: "Logged in Successfully",
-            accessToken
+            accessToken,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                onboardingCompleted: user.onboardingCompleted,
+            },
         }
     }
 

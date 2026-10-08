@@ -10,8 +10,9 @@ export class NotificationController {
   constructor(private notifications: NotificationService) {}
 
   @Get()
-  findAll(@Req() req: Req_, @Query('unread') unread?: string) {
-    return this.notifications.findAll(req.user.id, unread === 'true');
+  findAll(@Req() req: Req_, @Query('unread') unread?: string, @Query('unreadOnly') unreadOnly?: string) {
+    const shouldFilter = unread === 'true' || unreadOnly === 'true';
+    return this.notifications.findAll(req.user.id, shouldFilter);
   }
 
   @Get('unread-count')

@@ -60,10 +60,11 @@ export class TransactionService {
                 type,
                 amount: create.amount,
                 date: create.date ? new Date(create.date) : undefined,
-                category: create.category,
+                category: create.category ?? 'OTHER',
                 merchant: create.merchant,
-                payment: create.payment,
-                desire: create.desire,
+                payment: create.payment ?? 'CARD',
+                desire: create.desire ?? 'NEED',
+                incomeSources: create.incomeSource,
                 userId
             }
         })
@@ -88,6 +89,7 @@ export class TransactionService {
     }
 
     async updateTranscation(id: number, userId: number, update: UpdateTransaction) {
+        const { incomeSource, date, ...transactionData } = update;
         const updateTransaction = await this.prisma.transaction.update({
             where: {
                 id: id,
@@ -95,7 +97,10 @@ export class TransactionService {
             },
 
             data: {
-                ...update
+                ...transactionData,
+                ...(date ? { date: new Date(date) } : {}),
+                ...(incomeSource ? { incomeSources: incomeSource } : {}),
+                ...(update.type === TransactionType.INCOME ? { category: 'OTHER', desire: 'NEED' } : {}),
             }
         })
 

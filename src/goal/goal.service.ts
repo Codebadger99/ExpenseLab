@@ -7,8 +7,11 @@ import { addedMoney } from './dto/add-goal-money.dto';
 export class GoalService {
     constructor(private readonly prisma: PrismaService) { }
 
-    async getAllGoal() {
-        const allGoals = await this.prisma.goal.findMany()
+    async getAllGoal(userId: number) {
+        const allGoals = await this.prisma.goal.findMany({
+            where: { userId },
+            orderBy: { createdAt: 'desc' },
+        })
 
         return allGoals
     }

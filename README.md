@@ -31,6 +31,10 @@
 $ npm install
 ```
 
+## Environment variables
+
+Create `backend/.env` from `.env.example` and set `DATABASE_URL` to your PostgreSQL connection string and `JWT_SECRET` to a long, random secret. `PORT` is optional and defaults to `3000`. Keep `.env` private; it is ignored by Git. The frontend's backend URL is configured separately in `frontend/.env` as `VITE_API_URL`.
+
 ## Compile and run the project
 
 ```bash

@@ -10,8 +10,8 @@ export class GoalController {
     constructor(private goalService: GoalService) { }
 
     @Get()
-    getAll() {
-        return this.goalService.getAllGoal()
+    getAll(@Req() req: { user: { id: number } }) {
+        return this.goalService.getAllGoal(req.user.id)
     }
 
     @Get(':id')

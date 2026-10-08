@@ -6,11 +6,13 @@ import { UpdatedJournal } from './dto/update-journal.dto';
 @Injectable()
 export class JournalService {
     constructor(private prisma: PrismaService){}
-    async findAllJournal(){
+    async findAllJournal(userId: number){
         const findAll = await this.prisma.journal.findMany({
+            where: { userId },
             include: {
                 transaction: true
-            }
+            },
+            orderBy: { createdAt: 'desc' },
         })
 
         return findAll

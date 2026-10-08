@@ -9,12 +9,12 @@ import { AuthGuard } from '@nestjs/passport';
 export class JournalController {
     constructor(private journal: JournalService) { }
     @Get()
-    findAll() {
-        return this.journal.findAllJournal()
+    findAll(@Req() req: { user: { id: number } }) {
+        return this.journal.findAllJournal(req.user.id)
     }
 
     @Post()
-    createJournal(create: createdJournal, @Req() req: { user: { id: number } }) {
+    createJournal(@Body() create: createdJournal, @Req() req: { user: { id: number } }) {
         return this.journal.createJournalForm(create, req.user.id)
     }
 
