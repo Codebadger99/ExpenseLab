@@ -17,12 +17,4 @@ export class UserController {
   getMe(@Req() req: { user: { id: number } }) {
     return this.userService.getMe(req.user.id);
   }
-
-  @Patch('me/onboarding')
-  updateOnboarding(
-    @Req() req: { user: { id: number } },
-    @Body() body: UpdateOnboardingDto,
-  ) {
-    return this.userService.updateOnboarding(req.user.id, body.onboardingCompleted);
-  }
 }

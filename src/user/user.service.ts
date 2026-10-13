@@ -12,7 +12,6 @@ export class UserService {
         id: true,
         name: true,
         email: true,
-        onboardingCompleted: true,
       },
     });
 
@@ -23,15 +22,4 @@ export class UserService {
     return user;
   }
 
-  async updateOnboarding(userId: number, onboardingCompleted: boolean) {
-    const user = await this.prisma.user.update({
-      where: { id: userId },
-      data: { onboardingCompleted },
-      select: {
-        onboardingCompleted: true,
-      },
-    });
-
-    return user;
-  }
 }
