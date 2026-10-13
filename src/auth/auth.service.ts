@@ -35,7 +35,6 @@ export class AuthService {
                 id: true,
                 name: true,
                 email: true,
-                onboardingCompleted: true,
                 createdAt: true,
                 updatedAt: true,
             },
@@ -53,7 +52,6 @@ export class AuthService {
                 id: user.id,
                 name: user.name,
                 email: user.email,
-                onboardingCompleted: user.onboardingCompleted,
             },
         }
     }

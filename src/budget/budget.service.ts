@@ -13,7 +13,6 @@ export class BudgetService {
     private readonly prisma: PrismaService,
   ) {}
 
-  // Get all budgets belonging to the logged-in user
   async readAllBudget(userId: number) {
     return this.prisma.budget.findMany({
       where: {
@@ -25,7 +24,7 @@ export class BudgetService {
     });
   }
 
-  // Update the limit of an existing default category
+
     async updateBudget(
     userId: number,
     updated: UpdatedBudget,
