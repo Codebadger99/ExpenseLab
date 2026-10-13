@@ -10,7 +10,7 @@ export class MailService {
   constructor(private readonly config: ConfigService) {
     this.transporter = nodemailer.createTransport({
       host: this.config.get<string>('SMTP_HOST'),
-      port: Number(this.config.get<string>('SMTP_PORT', '587')),
+      port: Number(this.config.get<string>('SMTP_PORT', '465')),
       secure: this.config.get<string>('SMTP_SECURE') === 'true',
       auth: {
         user: this.config.get<string>('SMTP_USER'),
@@ -44,4 +44,9 @@ export class MailService {
       `,
     });
   }
+
+  async testConnection() {
+  await this.transporter.verify();
+  return { message: 'SMTP connection successful' };
+}
 }
