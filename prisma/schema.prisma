@@ -70,7 +70,6 @@ model User {
   name                String
   email               String         @unique
   passwordHash        String
-  onboardingCompleted Boolean        @default(false)
   transactions        Transaction[]
   journals            Journal[]
   goals               Goal[]

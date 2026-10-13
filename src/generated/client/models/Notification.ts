@@ -510,6 +510,10 @@ export type NullableEnumCategoryFieldUpdateOperationsInput = {
   set?: $Enums.Category | null
 }
 
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
 export type NotificationCreateWithoutUserInput = {
   type: $Enums.NotificationType
   title: string

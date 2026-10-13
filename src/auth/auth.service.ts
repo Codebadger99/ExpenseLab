@@ -79,8 +79,7 @@ export class AuthService {
             user: {
                 id: user.id,
                 name: user.name,
-                email: user.email,
-                onboardingCompleted: user.onboardingCompleted,
+                email: user.email
             },
         }
     }
