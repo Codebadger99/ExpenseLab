@@ -66,17 +66,18 @@ enum IncomeSource {
 }
 
 model User {
-  id                  Int            @id @default(autoincrement())
-  name                String
-  email               String         @unique
-  passwordHash        String
-  transactions        Transaction[]
-  journals            Journal[]
-  goals               Goal[]
-  budgets             Budget[]
-  createdAt           DateTime       @default(now())
-  updatedAt           DateTime       @updatedAt
-  notifications      Notification[]
+  id            Int            @id @default(autoincrement())
+  name          String
+  email         String         @unique
+  passwordHash  String
+  transactions  Transaction[]
+  journals      Journal[]
+  goals         Goal[]
+  budgets       Budget[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  notifications Notification[]
+  passwordReset PasswordReset[]
 }
 
 model Transaction {
@@ -152,4 +153,17 @@ model Notification {
 
   @@unique([userId, type, category, month])
   @@index([userId, isRead])
+}
+
+model PasswordReset {
+    id        Int       @id @default(autoincrement())
+    codeHash  String
+    expiresAt DateTime
+    attempts  Int       @default(0)
+    usedAt    DateTime?
+    userId    Int
+    user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    createdAt DateTime  @default(now())
+
+    @@index([userId])
 }

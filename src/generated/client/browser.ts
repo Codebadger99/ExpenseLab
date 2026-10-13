@@ -47,3 +47,8 @@ export type Budget = Prisma.BudgetModel
  * 
  */
 export type Notification = Prisma.NotificationModel
+/**
+ * Model PasswordReset
+ * 
+ */
+export type PasswordReset = Prisma.PasswordResetModel
