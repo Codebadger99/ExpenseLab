@@ -5,11 +5,13 @@ import { Register } from './dto/register.dto';
 import { Login } from './dto/login.dto'
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { randomInt } from 'crypto';
+import { MailService } from '../mail/mail.service';
 
 
 @Injectable()
 export class AuthService {
-    constructor(private prisma: PrismaService, private jwt: JwtService) { }
+    constructor(private prisma: PrismaService, private jwt: JwtService, private mail: MailService) { }
 
     async Register(register: Register) {
         const exists = await this.prisma.user.findUnique({
@@ -18,7 +20,7 @@ export class AuthService {
             }
         })
 
-        if (exists) throw new ConflictException("Email already exists")
+        if (exists) throw new ConflictException("An account with this email already exists. Please log in.")
 
         const Hashedpassword = await bcrypt.hash(register.password, 10)
 
@@ -84,5 +86,36 @@ export class AuthService {
         }
     }
 
-    
+    async checkMail(email: string) {
+        const existing = await this.prisma.user.findUnique({
+            where: { email },
+            select: { id: true }
+        })
+        return { exists: !!existing }
+    }
+
+    async forgotPassword(email: string) {
+        const response = "If that email is registered, a reset code has been sent."
+        const user = await this.prisma.user.findUnique({ where: { email } })
+        if (!user) return response
+
+
+        const code = randomInt(0, 1_000_000).toString().padStart(6, '0');
+        const codeHash = await bcrypt.hash(code, 10);
+
+        await this.prisma.$transaction([
+            this.prisma.passwordReset.deleteMany({ where: { userId: user.id } }),
+            this.prisma.passwordReset.create({
+                data: { userId: user.id, codeHash, expiresAt: new Date(Date.now() + 10 * 60 * 1000) },
+            }),
+        ]);
+
+        try {
+            await this.mail.sendResetCode(user.email, code);
+        } catch (err) {
+            console.error('Could not send reset email', err); 
+        }
+        return response
+    }
+
 }
