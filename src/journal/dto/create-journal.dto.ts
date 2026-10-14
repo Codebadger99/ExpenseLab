@@ -1,9 +1,10 @@
-import { IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsEnum, IsInt, IsOptional, IsString, Min } from "class-validator";
 import { Worth } from "../../generated/client/enums";
 
 export class createdJournal{
 
-    @IsNumber()
+    @IsInt()
+    @Min(1)
     transactionId: number;
 
     @IsOptional()

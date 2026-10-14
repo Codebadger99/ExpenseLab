@@ -14,11 +14,13 @@ export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
   @Post('register')
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   Register(@Body() register: Register) {
     return this.authService.Register(register)
   }
 
   @Post('login')
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   Login(@Body() login: Login) {
     return this.authService.Login(login)
   }

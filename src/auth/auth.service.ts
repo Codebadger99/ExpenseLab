@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Register } from './dto/register.dto';
 
@@ -35,6 +35,7 @@ export class AuthService {
                 id: true,
                 name: true,
                 email: true,
+                monthlyTrackAmount: true,
                 createdAt: true,
                 updatedAt: true,
             },
@@ -52,6 +53,7 @@ export class AuthService {
                 id: user.id,
                 name: user.name,
                 email: user.email,
+                monthlyTrackAmount: user.monthlyTrackAmount,
             },
         }
     }
@@ -80,7 +82,8 @@ export class AuthService {
             user: {
                 id: user.id,
                 name: user.name,
-                email: user.email
+                email: user.email,
+                monthlyTrackAmount: user.monthlyTrackAmount,
             },
         }
     }
@@ -191,7 +194,7 @@ async deleteAccount(userId: number, password: string) {
     !user ||
     !(await bcrypt.compare(password, user.passwordHash))
   ) {
-    throw new UnauthorizedException('Incorrect password');
+    throw new ForbiddenException('Incorrect password');
   }
 
   await this.prisma.user.delete({

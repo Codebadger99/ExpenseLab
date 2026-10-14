@@ -70,6 +70,7 @@ model User {
   name          String
   email         String         @unique
   passwordHash  String
+  monthlyTrackAmount Int?
   transactions  Transaction[]
   journals      Journal[]
   goals         Goal[]

@@ -55,26 +55,29 @@ export class TransactionService {
             );
         }
 
-        const createTransaction = await this.prisma.transaction.create({
-            data: {
-                type,
-                amount: create.amount,
-                date: create.date ? new Date(create.date) : undefined,
-                category: create.category ?? 'OTHER',
-                merchant: create.merchant,
-                payment: create.payment ?? 'CARD',
-                desire: create.desire ?? 'NEED',
-                incomeSources: create.incomeSource,
-                userId
-            }
-        })
+        const createTransaction = await this.prisma.$transaction(async (transactionClient) => {
+            const transaction = await transactionClient.transaction.create({
+                data: {
+                    type,
+                    amount: create.amount,
+                    date: create.date ? new Date(create.date) : undefined,
+                    category: create.category ?? 'OTHER',
+                    merchant: create.merchant,
+                    payment: create.payment ?? 'CARD',
+                    desire: create.desire ?? 'NEED',
+                    incomeSources: create.incomeSource,
+                    userId,
+                },
+            });
 
-        await this.prisma.journal.create({
-            data: {
-                userId,
-                transactionId: createTransaction.id
+            if (type === TransactionType.EXPENSE) {
+                await transactionClient.journal.create({
+                    data: { userId, transactionId: transaction.id },
+                });
             }
-        })
+
+            return transaction;
+        });
         if (
             createTransaction.type === TransactionType.EXPENSE &&
             createTransaction.category
