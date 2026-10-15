@@ -1,16 +1,15 @@
 @import "tailwindcss";
-@import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
 
 @custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: 'Geist Variable', sans-serif;
+  --font-heading: var(--font-sans);
+}
 
 @theme inline {
   --color-background: var(--background);
@@ -128,11 +127,13 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    box-sizing: border-box;
   }
   body {
     @apply bg-background text-foreground;
   }
   html {
     @apply font-sans;
+    margin: 0;
   }
 }
