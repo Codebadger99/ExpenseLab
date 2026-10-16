@@ -34,7 +34,7 @@ const App = () => {
           <h1 className="text-7xl text-[#172D26] font-extrabold">
             Your Money. <br /> A clearer <br /> picture.
           </h1>
-          <p className="text-balance text-[#78847E]">
+          <p className="text-balance text-[#78847E] tracking-wide">
             See where your money goes, plan for what matters, and understand the
             habits behind every purchase. All in one calm space workspace
           </p>
