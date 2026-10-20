@@ -9,6 +9,23 @@ import { NotificationService } from '../notification/notification.service';
 export class TransactionService {
     constructor(private prisma: PrismaService, private readonly notificationService: NotificationService) { }
 
+    private assertNotFutureDate(date?: string) {
+        if (!date) return;
+
+        const transactionDay = date.slice(0, 10);
+        const todayParts = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Africa/Lagos',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+        }).formatToParts(new Date());
+        const today = `${todayParts.find((part) => part.type === 'year')?.value}-${todayParts.find((part) => part.type === 'month')?.value}-${todayParts.find((part) => part.type === 'day')?.value}`;
+
+        if (transactionDay > today) {
+            throw new BadRequestException('Transaction date cannot be in the future');
+        }
+    }
+
     async readAllTransaction(userId: number) {
         const allTransaction = await this.prisma.transaction.findMany({
             where: { userId },
@@ -34,6 +51,7 @@ export class TransactionService {
     }
 
     async createTransaction(create: createTransaction, userId: number) {
+        this.assertNotFutureDate(create.date);
         const type = create.type ?? TransactionType.EXPENSE
 
         if (type === TransactionType.EXPENSE && !create.category) {
@@ -92,6 +110,7 @@ export class TransactionService {
     }
 
     async updateTranscation(id: number, userId: number, update: UpdateTransaction) {
+        this.assertNotFutureDate(update.date);
         const { incomeSource, date, ...transactionData } = update;
         const updateTransaction = await this.prisma.transaction.update({
             where: {

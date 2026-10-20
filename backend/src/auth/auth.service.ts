@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, Logger, ServiceUnavailableException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Register } from './dto/register.dto';
 
@@ -12,6 +12,8 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Injectable()
 export class AuthService {
+    private readonly logger = new Logger(AuthService.name);
+
     constructor(private prisma: PrismaService, private jwt: JwtService, private mail: MailService) { }
 
     async Register(register: Register) {
@@ -114,8 +116,14 @@ export class AuthService {
 
         try {
             await this.mail.sendResetCode(user.email, code);
-        } catch (err) {
-            console.error('Could not send reset email', err); 
+        } catch (error) {
+            this.logger.error(
+                'Password reset email delivery failed',
+                error instanceof Error ? error.stack : undefined,
+            );
+            throw new ServiceUnavailableException(
+                'We couldn’t send your password reset email right now. Please try again later.',
+            );
         }
         return response
     }
