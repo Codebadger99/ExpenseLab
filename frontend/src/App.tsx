@@ -4,6 +4,7 @@ import { Button } from "../components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { DotFilledIcon } from "@radix-ui/react-icons";
 
+
 const App = () => {
   return (
     <>
@@ -64,6 +65,18 @@ const App = () => {
           <img src={Workspace} alt="workspace-preview" />
         </div>
       </div>
+
+
+      {/* <div>
+        <div>
+          <p>Overview</p>
+        </div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div> */}
     </>
   );
 };
