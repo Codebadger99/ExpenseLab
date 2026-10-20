@@ -408,15 +408,10 @@ export function Workspace({
               }
             />
             <Route path="*" element={<Navigate to="/overview" replace />} />
+
+            
           </Routes>
-          <footer className="page-footer">
-            <span>ExpenseLab · Personal finance, made clear.</span>
-            <span>
-              {activeItem.path === "/insights"
-                ? `${monthName(month)} · NGN`
-                : "Personal account · NGN"}
-            </span>
-          </footer>
+          
         </section>
       </main>
       <TransactionDialog

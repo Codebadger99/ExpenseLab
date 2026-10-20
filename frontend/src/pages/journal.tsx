@@ -126,7 +126,7 @@ export function JournalPage({
           variant={filter === "NEEDS_REVIEW" ? "default" : "outline"}
           onClick={() => setFilter("NEEDS_REVIEW")}
         >
-          Needs review ({needsReview.length})
+          Needs review ({needsReview!.length})
         </Button>
       </div>
       {visible.length ? (

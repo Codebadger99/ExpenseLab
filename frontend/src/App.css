@@ -2919,7 +2919,6 @@ a {
 
 .landing-feature-strip {
   width: 100%;
-  min-height: 58px;
   overflow: hidden;
   padding: 10px 0;
   border-top: 1px solid var(--line);
@@ -3695,7 +3694,6 @@ a {
   }
 
   .landing-feature-strip {
-    min-height: 49px;
     padding: 8px 0;
   }
 
