@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Plus, Sprout, Target, Trash2 } from "lucide-react";
 import type { Goal } from "../lib/types";
 import { apiRequest, getErrorMessage } from "../lib/api";
+import { getFormValidationError } from "../lib/form-validation";
 import { money } from "../lib/dashboard-data";
 import {
   ConfirmDialog,
@@ -44,6 +45,15 @@ export function GoalsPage({
 
   async function createGoal(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const validationError = getFormValidationError(event.currentTarget);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+    if (!name.trim()) {
+      setError("Enter a name for this goal.");
+      return;
+    }
     setBusy(true);
     setError("");
     try {
@@ -64,6 +74,11 @@ export function GoalsPage({
 
   async function addMoney(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const validationError = getFormValidationError(event.currentTarget);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     if (!selected) return;
     setBusy(true);
     setError("");
@@ -226,6 +241,7 @@ export function GoalsPage({
           <form
             onSubmit={dialog === "new" ? createGoal : addMoney}
             className="dialog-form"
+            noValidate
           >
             {dialog === "new" ? (
               <>
@@ -239,12 +255,12 @@ export function GoalsPage({
                   />
                 </Field>
                 <Field label="Target amount">
-                  <CurrencyInput value={target} onChange={setTarget} />
+                  <CurrencyInput value={target} onChange={setTarget} min={1} step={1} />
                 </Field>
               </>
             ) : (
               <Field label="Contribution amount">
-                <CurrencyInput value={amount} onChange={setAmount} />
+                <CurrencyInput value={amount} onChange={setAmount} min={1} step={1} />
               </Field>
             )}
             {error && (

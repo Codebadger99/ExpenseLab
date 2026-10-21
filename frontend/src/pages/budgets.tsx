@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ChartNoAxesCombined, Pencil } from "lucide-react";
 import type { Budget, Category, Transaction } from "../lib/types";
 import { apiRequest, getErrorMessage } from "../lib/api";
+import { getFormValidationError } from "../lib/form-validation";
 import {
   CATEGORIES,
   CATEGORY_ICONS,
@@ -36,6 +37,7 @@ export function BudgetsPage({
   const [saving, setSaving] = useState<Category | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [error, setError] = useState("");
+  const [errorCategory, setErrorCategory] = useState<Category | null>(null);
   if (budgets.loading || transactions.loading)
     return <PageSkeleton page="budgets" />;
   if (budgets.error || transactions.error)
@@ -64,6 +66,7 @@ export function BudgetsPage({
   async function save(category: Category, fallback: number) {
     const limit = Number(drafts[category] ?? fallback);
     if (!Number.isFinite(limit) || limit < 0) {
+      setErrorCategory(category);
       setError("Enter a valid monthly limit.");
       return;
     }
@@ -79,9 +82,11 @@ export function BudgetsPage({
         delete next[category];
         return next;
       });
+      setErrorCategory(null);
       setEditingCategory(null);
       onSaved();
     } catch (reason) {
+      setErrorCategory(category);
       setError(getErrorMessage(reason));
     } finally {
       setSaving(null);
@@ -101,11 +106,6 @@ export function BudgetsPage({
           that have crossed their budget.
         </span>
       </div>
-      {error && (
-        <p className="form-error" role="alert">
-          {error}
-        </p>
-      )}
       <div className="budget-grid">
         {rows.map((item) => {
           const Icon = CATEGORY_ICONS[item.category];
@@ -135,8 +135,15 @@ export function BudgetsPage({
                 id={`limit-form-${item.category}`}
                 onSubmit={(event) => {
                   event.preventDefault();
+                  const validationError = getFormValidationError(event.currentTarget);
+                  if (validationError) {
+                    setErrorCategory(item.category);
+                    setError(validationError);
+                    return;
+                  }
                   void save(item.category, item.limit);
                 }}
+                noValidate
               >
                 <label htmlFor={`limit-${item.category}`}>
                   Monthly limit (₦)
@@ -148,16 +155,22 @@ export function BudgetsPage({
                     min="0"
                     step="1"
                     value={draft}
-                    onChange={(event) =>
+                    onChange={(event) => {
                       setDrafts((current) => ({
                         ...current,
                         [item.category]: event.target.value,
-                      }))
-                    }
+                      }));
+                      if (errorCategory === item.category) setError("");
+                    }}
                     placeholder="Set a limit"
                   />
                   <Pencil size={13} />
                 </div>
+                {errorCategory === item.category && error && (
+                  <p className="form-error" role="alert">
+                    {error}
+                  </p>
+                )}
                 <Button
                   className="save-limit"
                   type="submit"

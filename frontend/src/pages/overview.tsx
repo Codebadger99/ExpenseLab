@@ -23,6 +23,7 @@ import {
   monthTransactions,
   money,
 } from "../lib/dashboard-data";
+import { getFormValidationError } from "../lib/form-validation";
 import {
   CategoryDonutChart,
   DailySpendingChart,
@@ -124,9 +125,14 @@ export function OverviewPage({
 
   async function saveMonthlyTarget(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const validationError = getFormValidationError(event.currentTarget);
+    if (validationError) {
+      setTargetError(validationError);
+      return;
+    }
     const amount = Number(targetDraft);
-    if (!Number.isFinite(amount) || amount < 1) {
-      setTargetError("Enter a monthly target greater than zero.");
+    if (!Number.isSafeInteger(amount) || amount < 1) {
+      setTargetError("Enter a whole-number monthly target greater than zero.");
       return;
     }
     setSavingTarget(true);
@@ -362,9 +368,15 @@ export function OverviewPage({
           <form
             className="dialog-form"
             onSubmit={(event) => void saveMonthlyTarget(event)}
+            noValidate
           >
             <Field label="Monthly target">
-              <CurrencyInput value={targetDraft} onChange={setTargetDraft} />
+              <CurrencyInput
+                value={targetDraft}
+                onChange={setTargetDraft}
+                min={1}
+                step={1}
+              />
             </Field>
             {targetError && (
               <p className="form-error" role="alert">

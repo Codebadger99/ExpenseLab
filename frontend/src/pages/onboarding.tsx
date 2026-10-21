@@ -5,6 +5,7 @@ import { Card } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
 import { Link } from "react-router";
 import { apiRequest, getErrorMessage } from "../lib/api";
+import { getFormValidationError } from "../lib/form-validation";
 import {
   CATEGORIES as categories,
   label as categoryName,
@@ -78,6 +79,11 @@ export function OnboardingPage({
 
   async function saveTarget(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const validationError = getFormValidationError(event.currentTarget);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     const amount = Number(target);
     if (!Number.isSafeInteger(amount) || amount < 1) {
       setError("Enter a whole-number monthly target greater than zero.");
@@ -114,6 +120,11 @@ export function OnboardingPage({
 
   async function saveBudgets(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const validationError = getFormValidationError(event.currentTarget);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     if (allocated > targetAmount) {
       setError(
         "Reduce your category limits so they fit within your monthly target.",
@@ -181,6 +192,7 @@ export function OnboardingPage({
             <form
               className="grid gap-5"
               onSubmit={(event) => void saveTarget(event)}
+              noValidate
             >
               <label className="grid gap-2 text-sm font-medium">
                 Monthly target (₦)
@@ -266,6 +278,7 @@ export function OnboardingPage({
               <form
                 className="grid gap-3"
                 onSubmit={(event) => void saveBudgets(event)}
+                noValidate
               >
                 <div className="grid gap-2 sm:grid-cols-2">
                   {categories.map((category) => (

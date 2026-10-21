@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { BookOpen, Pencil } from "lucide-react";
 import type { Journal, Worth } from "../lib/types";
 import { apiRequest, getErrorMessage } from "../lib/api";
+import { getFormValidationError } from "../lib/form-validation";
 import { CATEGORY_ICONS, label, money } from "../lib/dashboard-data";
 import {
   EmptyState,
@@ -62,6 +63,11 @@ export function JournalPage({
 
   async function saveEntry(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const validationError = getFormValidationError(event.currentTarget);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     if (!entry) return;
     setBusy(true);
     setError("");
@@ -306,7 +312,7 @@ export function JournalPage({
               {money(entry?.transaction.amount ?? 0)}
             </DialogDescription>
           </DialogHeader>
-          <form className="dialog-form" onSubmit={saveEntry}>
+          <form className="dialog-form" onSubmit={saveEntry} noValidate>
             <Field label="Why did you make this purchase?">
               <Input
                 value={why}

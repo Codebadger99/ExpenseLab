@@ -1777,102 +1777,6 @@ a {
   width: 100%;
 }
 
-.yearly-calendar-card > .section-head {
-  margin-bottom: 17px;
-}
-
-.year-calendar {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px 16px;
-}
-
-.year-calendar-month {
-  min-width: 0;
-}
-
-.year-calendar-month h3 {
-  margin: 0 0 7px;
-  color: var(--ink);
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.year-calendar-weekdays,
-.year-calendar-days {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 3px;
-}
-
-.year-calendar-weekdays {
-  margin-bottom: 3px;
-  color: var(--muted);
-  text-align: center;
-}
-
-.year-calendar-weekdays span {
-  font-size: 8px;
-}
-
-.year-calendar-day,
-.year-calendar-blank {
-  width: 100%;
-  aspect-ratio: 1;
-  border-radius: 3px;
-}
-
-.year-calendar-day {
-  outline: none;
-}
-
-.year-calendar-day:focus-visible {
-  box-shadow: 0 0 0 2px var(--green);
-}
-
-.year-calendar-day.level-0 {
-  background: #edf1ed;
-}
-
-.year-calendar-day.level-1 {
-  background: #c4ddcf;
-}
-
-.year-calendar-day.level-2 {
-  background: #8fc0a3;
-}
-
-.year-calendar-day.level-3 {
-  background: #4d9b75;
-}
-
-.year-calendar-day.level-4 {
-  background: #128260;
-}
-
-.year-calendar-legend {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 18px;
-  color: var(--muted);
-  font-size: 10px;
-}
-
-.year-calendar-legend i {
-  width: 11px;
-  height: 11px;
-  border-radius: 3px;
-}
-
-.year-calendar-legend span:first-child {
-  margin-right: 3px;
-}
-
-.year-calendar-legend span:last-child {
-  margin-left: 3px;
-}
-
 .write-entry {
   height: 30px;
   font-size: 9px;
@@ -2167,12 +2071,41 @@ a {
   color: var(--green);
   font-size: 12px;
   text-align: left;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  text-decoration: none;
+  transition: color 140ms ease, opacity 140ms ease;
 }
 
 .delete-password-help:hover {
-  color: var(--green-dark);
+  color: var(--green);
+  opacity: 0.82;
+}
+
+.delete-password-help:focus-visible {
+  border-radius: 3px;
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+
+.delete-confirmation {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.delete-confirmation input {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  margin: 0;
+  accent-color: var(--green);
+}
+
+.delete-confirmation span {
+  min-width: 0;
 }
 
 .form-error {
@@ -3131,10 +3064,6 @@ a {
     gap: 12px;
   }
 
-  .year-calendar {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
   .filters-row {
     display: none;
   }
@@ -3386,22 +3315,6 @@ a {
   .workspace .nav-link span {
     font-size: 10px !important;
   }
-}
-
-:root[data-theme="dark"] .year-calendar-day.level-0 {
-  background: #293c34;
-}
-
-:root[data-theme="dark"] .year-calendar-day.level-1 {
-  background: #315e48;
-}
-
-:root[data-theme="dark"] .year-calendar-day.level-2 {
-  background: #43845f;
-}
-
-:root[data-theme="dark"] .year-calendar-day.level-3 {
-  background: #58a978;
 }
 
 .account-settings-trigger {
@@ -4938,16 +4851,6 @@ a {
 }
 
 @media (max-width: 560px) {
-  .year-calendar {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 15px 12px;
-  }
-
-  .year-calendar-days,
-  .year-calendar-weekdays {
-    gap: 2px;
-  }
-
   .landing-page .landing-donut-wrap {
     grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
     gap: 10px;

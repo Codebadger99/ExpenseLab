@@ -5,6 +5,7 @@ import Brand from "../assets/Brand mark.png"
 import { Button } from "../../components/ui/button"
 import { Input } from "../../components/ui/input"
 import { apiRequest, getErrorMessage } from "../lib/api"
+import { getFormValidationError } from "../lib/form-validation"
 import type { User } from "../lib/types"
 import { ThemeToggle } from "../components/theme-toggle"
 import { LoadingSpinner } from "../components/workspace-ui"
@@ -38,6 +39,11 @@ export function AuthScreen({
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    const validationError = getFormValidationError(event.currentTarget)
+    if (validationError) {
+      setError(validationError)
+      return
+    }
     setBusy(true)
     setError("")
     setNotice("")
@@ -100,7 +106,7 @@ export function AuthScreen({
       <section className="auth-card">
         <div className="auth-brand-row"><Link to="/login" className="brand-lockup auth-brand"><img src={Brand} alt="" /><span>ExpenseLab</span></Link><ThemeToggle /></div>
         <div className="auth-intro"><span className="eyebrow"><Sprout size={14} /> Personal finance, made clear</span><h1>{title}</h1><p>{description}</p></div>
-        <form onSubmit={(event) => void submit(event)} className="auth-form">
+        <form onSubmit={(event) => void submit(event)} className="auth-form" noValidate>
           {isRegister && <label className="form-field"><span>Your name</span><Input autoComplete="name" value={name} onChange={(event) => setName(event.target.value)} required /></label>}
           <label className="form-field"><span>Email address</span><Input type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} required /></label>
           {isReset && <label className="form-field"><span>6-digit reset code</span><Input inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" maxLength={6} value={code} onChange={(event) => setCode(event.target.value)} required /></label>}

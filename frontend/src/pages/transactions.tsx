@@ -15,6 +15,7 @@ import type {
   TransactionType,
 } from "../lib/types";
 import { apiRequest, getErrorMessage } from "../lib/api";
+import { getFormValidationError } from "../lib/form-validation";
 import {
   CATEGORIES,
   CATEGORY_ICONS,
@@ -76,6 +77,11 @@ export function TransactionDialog({
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const validationError = getFormValidationError(event.currentTarget);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     if (date > today) {
       setError("Choose today or an earlier date for this transaction.");
       return;
@@ -118,7 +124,7 @@ export function TransactionDialog({
             Keep a clear record of money coming in and going out.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={submit} className="dialog-form">
+        <form onSubmit={submit} className="dialog-form" noValidate>
           <Field label="Type">
             <select
               value={type}
@@ -131,7 +137,7 @@ export function TransactionDialog({
             </select>
           </Field>
           <Field label="Amount">
-            <CurrencyInput value={amount} onChange={setAmount} />
+            <CurrencyInput value={amount} onChange={setAmount} min={0.01} />
           </Field>
           <Field label={type === "EXPENSE" ? "Merchant" : "Description"}>
             <Input

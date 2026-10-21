@@ -13,7 +13,6 @@ import type {
   NeedsWants,
   PaymentMethods,
   Statistics,
-  Transaction,
   Trends,
 } from "../lib/types";
 import { label, monthName, money } from "../lib/dashboard-data";
@@ -32,114 +31,6 @@ import {
 } from "../components/workspace-ui";
 import { Card } from "../../components/ui/card";
 import { useResource } from "./page-data";
-
-const calendarMonthFormatter = new Intl.DateTimeFormat("en", {
-  month: "long",
-  timeZone: "UTC",
-});
-const calendarDayFormatter = new Intl.DateTimeFormat("en", {
-  month: "short",
-  day: "numeric",
-  timeZone: "UTC",
-});
-
-function YearlySpendingCalendar({
-  year,
-  transactions,
-}: {
-  year: number;
-  transactions: Transaction[];
-}) {
-  const dailySpending = new Map<string, { amount: number; count: number }>();
-  for (const transaction of transactions) {
-    if (transaction.type !== "EXPENSE" || transaction.date.slice(0, 4) !== String(year)) {
-      continue;
-    }
-    const day = transaction.date.slice(0, 10);
-    const current = dailySpending.get(day) ?? { amount: 0, count: 0 };
-    current.amount += Number(transaction.amount);
-    current.count += 1;
-    dailySpending.set(day, current);
-  }
-  const maxSpending = Math.max(
-    0,
-    ...Array.from(dailySpending.values(), (day) => day.amount),
-  );
-
-  return (
-    <div
-      className="year-calendar"
-      role="group"
-      aria-label={`Daily spending during ${year}`}
-    >
-      {Array.from({ length: 12 }, (_, monthIndex) => {
-        const firstWeekday = new Date(Date.UTC(year, monthIndex, 1)).getUTCDay();
-        const daysInMonth = new Date(
-          Date.UTC(year, monthIndex + 1, 0),
-        ).getUTCDate();
-        const monthLabel = calendarMonthFormatter.format(
-          new Date(Date.UTC(year, monthIndex, 1)),
-        );
-
-        return (
-          <section className="year-calendar-month" key={monthIndex}>
-            <h3>{monthLabel}</h3>
-            <div className="year-calendar-weekdays" aria-hidden="true">
-              {"SMTWTFS".split("").map((day, index) => (
-                <span key={`${day}-${index}`}>{day}</span>
-              ))}
-            </div>
-            <div
-              className="year-calendar-days"
-              role="group"
-              aria-label={monthLabel}
-            >
-              {Array.from({ length: firstWeekday }, (_, index) => (
-                <span
-                  className="year-calendar-blank"
-                  key={`blank-${index}`}
-                  aria-hidden="true"
-                />
-              ))}
-              {Array.from({ length: daysInMonth }, (_, index) => {
-                const date = `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(index + 1).padStart(2, "0")}`;
-                const spending = dailySpending.get(date);
-                const level =
-                  !spending || maxSpending === 0
-                    ? 0
-                    : Math.min(
-                        4,
-                        Math.ceil((spending.amount / maxSpending) * 4),
-                      );
-                const formattedDate = calendarDayFormatter.format(
-                  new Date(`${date}T12:00:00Z`),
-                );
-                return (
-                  <span
-                    className={`year-calendar-day level-${level}`}
-                    key={date}
-                    role="img"
-                    tabIndex={0}
-                    title={
-                      spending
-                        ? `${formattedDate}: ${money(spending.amount)} across ${spending.count} ${spending.count === 1 ? "expense" : "expenses"}`
-                        : `${formattedDate}: No spending`
-                    }
-                    aria-label={
-                      spending
-                        ? `${formattedDate}: ${money(spending.amount)} spent`
-                        : `${formattedDate}: No spending`
-                    }
-                  />
-                );
-              })}
-            </div>
-          </section>
-        );
-      })}
-    </div>
-  );
-}
 
 export function InsightsPage({
   month,
@@ -170,7 +61,6 @@ export function InsightsPage({
     `/analytics/merchants/top${query}&limit=3`,
     refreshKey,
   );
-  const transactions = useResource<Transaction[]>("/transaction", refreshKey);
   const resources = [
     stats,
     needsWants,
@@ -178,7 +68,6 @@ export function InsightsPage({
     trends,
     insights,
     merchants,
-    transactions,
   ];
   const error = resources.find((item) => item.error)?.error;
   if (resources.some((item) => item.loading))
@@ -193,7 +82,6 @@ export function InsightsPage({
   const topShare = Number(
     topThree.reduce((total, item) => total + item.percent, 0).toFixed(1),
   );
-  const selectedYear = Number(month.slice(0, 4));
   const weekendMessage = messages.find((item) => item.includes("weekends"));
   const dailyMessage = messages.find((item) => item.includes("daily spending"));
 
@@ -278,30 +166,6 @@ export function InsightsPage({
             icon={ChartNoAxesCombined}
           />
         )}
-      </Card>
-      <Card className="chart-card yearly-calendar-card">
-        <div className="section-head">
-          <div>
-            <h2>{selectedYear} spending calendar</h2>
-            <p>
-              Each square is a day. Darker green means more spending; hover or
-              focus a day for its total.
-            </p>
-          </div>
-        </div>
-        <div className="year-calendar-legend" aria-label="Spending scale">
-          <span>Less</span>
-          <i className="level-0" />
-          <i className="level-1" />
-          <i className="level-2" />
-          <i className="level-3" />
-          <i className="level-4" />
-          <span>More</span>
-        </div>
-        <YearlySpendingCalendar
-          year={selectedYear}
-          transactions={transactions.data ?? []}
-        />
       </Card>
       <div className="insights-bottom">
         <Card className="needs-card">

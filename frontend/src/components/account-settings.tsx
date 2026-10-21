@@ -5,6 +5,7 @@ import { Button } from "../../components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../components/ui/dialog"
 import { Input } from "../../components/ui/input"
 import { apiRequest, getErrorMessage } from "../lib/api"
+import { getFormValidationError } from "../lib/form-validation"
 import { LoadingSpinner } from "./workspace-ui"
 
 export function AccountSettings({ email, onSignOut, onDeleted }: { email: string; onSignOut: () => void; onDeleted: () => void }) {
@@ -18,6 +19,11 @@ export function AccountSettings({ email, onSignOut, onDeleted }: { email: string
 
   async function deleteAccount(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    const validationError = getFormValidationError(event.currentTarget)
+    if (validationError) {
+      setError(validationError)
+      return
+    }
     setBusy(true)
     setError("")
     try {
@@ -54,9 +60,19 @@ export function AccountSettings({ email, onSignOut, onDeleted }: { email: string
     <Dialog open={deleteOpen} onOpenChange={(next) => { setDeleteOpen(next); if (!next) { setPassword(""); setConfirmed(false); setError("") } }}>
       <DialogContent className="form-dialog">
         <DialogHeader><DialogTitle>Delete your account?</DialogTitle><DialogDescription>This permanently deletes your account and its associated data. Enter your current password and confirm to continue.</DialogDescription></DialogHeader>
-        <form className="dialog-form" onSubmit={(event) => void deleteAccount(event)}>
+        <form className="dialog-form" onSubmit={(event) => void deleteAccount(event)} noValidate>
           <label className="form-field"><span>Current password</span><Input type="password" autoComplete="current-password" maxLength={128} value={password} onChange={(event) => setPassword(event.target.value)} required /></label>
-          <label className="flex cursor-pointer items-start gap-2 text-xs leading-5 text-[#59675f]"><input type="checkbox" checked={confirmed} onChange={(event) => setConfirmed(event.target.checked)} required /><span>I understand this permanently deletes my account and data.</span></label>
+          <label className="delete-confirmation">
+            <input
+              type="checkbox"
+              checked={confirmed}
+              onChange={(event) => setConfirmed(event.target.checked)}
+              required
+            />
+            <span>
+              I understand this permanently deletes my account and data.
+            </span>
+          </label>
           <button
             className="delete-password-help"
             type="button"

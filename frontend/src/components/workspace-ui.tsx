@@ -165,15 +165,17 @@ export function EmptyState({ title, description, icon: Icon = Sprout }: {
   )
 }
 
-export function CurrencyInput({ value, onChange, placeholder = "0" }: {
+export function CurrencyInput({ value, onChange, placeholder = "0", min = 0, step = 0.01 }: {
   value: string
   onChange: (value: string) => void
   placeholder?: string
+  min?: number
+  step?: number
 }) {
   return (
     <label className="currency-input">
       <span>₦</span>
-      <Input type="number" min="0" step="0.01" value={value} placeholder={placeholder} onChange={(event) => onChange(event.target.value)} required />
+      <Input type="number" min={min} step={step} value={value} placeholder={placeholder} onChange={(event) => onChange(event.target.value)} required />
     </label>
   )
 }
