@@ -5,6 +5,7 @@ const API_URL = (import.meta.env.VITE_API_URL ?? "http://localhost:3000").replac
 
 export const ACCESS_TOKEN_KEY = "expense-lab-access-token"
 export const USER_KEY = "expense-lab-user"
+export const AUTH_REQUIRED_EVENT = "expense-lab:auth-required"
 
 type RequestOptions = Omit<RequestInit, "body"> & {
   body?: unknown
@@ -57,6 +58,9 @@ export async function apiRequest<T>(
   }
 
   if (!response.ok) {
+    if (response.status === 401 && token && !path.startsWith("/auth/")) {
+      window.dispatchEvent(new Event(AUTH_REQUIRED_EVENT))
+    }
     const message =
       typeof payload === "object" && payload !== null && "message" in payload
         ? payload.message

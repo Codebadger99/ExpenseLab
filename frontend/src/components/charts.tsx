@@ -18,14 +18,14 @@ import {
 } from "../../components/ui/chart";
 
 const palette = [
-  "#128260",
-  "#80b39c",
-  "#b8cba7",
-  "#dabd84",
-  "#7c9291",
-  "#b4a5bd",
-  "#e2a38c",
-  "#9ca99e",
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-4)",
+  "var(--chart-5)",
+  "var(--chart-6)",
+  "var(--chart-7)",
+  "var(--chart-8)",
 ];
 const currency = (value: number) =>
   new Intl.NumberFormat("en-NG", {
@@ -52,8 +52,8 @@ export type DailySpendingPoint = {
 
 export function DailySpendingChart({ data }: { data: DailySpendingPoint[] }) {
   const config = {
-    amount: { label: "Daily spending", color: "#128260" },
-    movingAverage7: { label: "7-day average", color: "#d9bc84" },
+    amount: { label: "Daily spending", color: "var(--chart-1)" },
+    movingAverage7: { label: "7-day average", color: "var(--chart-4)" },
   } satisfies ChartConfig;
 
   return (
@@ -83,7 +83,14 @@ export function DailySpendingChart({ data }: { data: DailySpendingPoint[] }) {
           content={
             <ChartTooltipContent
               labelFormatter={(value) => displayDate(String(value))}
-              formatter={(value, name) => [currency(Number(value)), name]}
+              formatter={(value, name) => (
+                <div className="daily-spending-tooltip-row">
+                  <span>
+                    {name === "amount" ? "Daily spending" : "7-day average"}
+                  </span>
+                  <strong>{currency(Number(value))}</strong>
+                </div>
+              )}
             />
           }
         />
@@ -107,6 +114,45 @@ export function DailySpendingChart({ data }: { data: DailySpendingPoint[] }) {
         />
       </ComposedChart>
     </ChartContainer>
+  );
+}
+
+export function GoalProgressChart({
+  data,
+}: {
+  data: { name: string; saved: number; target: number }[];
+}) {
+  return (
+    <div className="goal-progress-chart" aria-label="Savings goal progress">
+      {data.map((goal, index) => {
+        const percentage =
+          goal.target > 0
+            ? Math.round((goal.saved / goal.target) * 100)
+            : 0;
+        const progress = Math.min(Math.max(percentage, 0), 100);
+        return (
+          <div className="goal-progress-item" key={`${goal.name}-${index}`}>
+            <div className="goal-progress-heading">
+              <strong>{goal.name}</strong>
+              <span>{percentage}%</span>
+            </div>
+            <p>
+              {currency(goal.saved)} saved of {currency(goal.target)}
+            </p>
+            <div
+              className="goal-progress-track"
+              role="progressbar"
+              aria-label={`${goal.name} savings progress`}
+              aria-valuemin={0}
+              aria-valuemax={goal.target}
+              aria-valuenow={Math.min(Math.max(goal.saved, 0), goal.target)}
+            >
+              <span style={{ width: `${progress}%` }} />
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
@@ -158,7 +204,7 @@ export function CategoryDonutChart({
           </Pie>
         </PieChart>
       </ChartContainer>
-      <ul className="grid gap-2.5">
+      <ul className="category-legend grid gap-2.5">
         {data.map((item, index) => (
           <li
             className="grid grid-cols-[8px_1fr_auto] items-center gap-2 text-xs"
@@ -168,10 +214,15 @@ export function CategoryDonutChart({
               className="h-2 w-2 rounded-full"
               style={{ backgroundColor: palette[index % palette.length] }}
             />
-            <span className="text-[#738078]">
+            <span className="category-legend-label" style={{ color: "var(--muted)" }}>
               {item.category.charAt(0) + item.category.slice(1).toLowerCase()}
             </span>
-            <strong className="text-[#1d332b]">{currency(item.amount)}</strong>
+            <strong
+              className="category-legend-value"
+              style={{ color: "var(--ink)" }}
+            >
+              {currency(item.amount)}
+            </strong>
           </li>
         ))}
       </ul>
@@ -191,8 +242,8 @@ export function NeedsWantsChart({
     { name: "want", amount: want.amount },
   ];
   const config = {
-    need: { label: "Needs", color: "#128260" },
-    want: { label: "Wants", color: "#d9bc84" },
+    need: { label: "Needs", color: "var(--chart-1)" },
+    want: { label: "Wants", color: "var(--chart-4)" },
   } satisfies ChartConfig;
   return (
     <div className="grid items-center gap-4 sm:grid-cols-[160px_1fr]">
@@ -226,23 +277,23 @@ export function NeedsWantsChart({
       </ChartContainer>
       <div className="grid gap-3">
         <div className="flex items-center justify-between gap-3">
-          <span className="text-xs text-[#738078]">Needs</span>
+          <span className="text-xs text-muted-foreground">Needs</span>
           <strong className="text-lg">{need.percent}%</strong>
         </div>
-        <div className="h-2 overflow-hidden rounded-full bg-[#edf0eb]">
+        <div className="h-2 overflow-hidden rounded-full bg-muted">
           <span
-            className="block h-full rounded-full bg-[#128260] transition-[width] duration-700"
-            style={{ width: `${need.percent}%` }}
+            className="block h-full rounded-full transition-[width] duration-700"
+            style={{ width: `${need.percent}%`, backgroundColor: "var(--chart-1)" }}
           />
         </div>
         <div className="flex items-center justify-between gap-3">
-          <span className="text-xs text-[#738078]">Wants</span>
+          <span className="text-xs text-muted-foreground">Wants</span>
           <strong className="text-lg">{want.percent}%</strong>
         </div>
-        <div className="h-2 overflow-hidden rounded-full bg-[#edf0eb]">
+        <div className="h-2 overflow-hidden rounded-full bg-muted">
           <span
-            className="block h-full rounded-full bg-[#d9bc84] transition-[width] duration-700"
-            style={{ width: `${want.percent}%` }}
+            className="block h-full rounded-full transition-[width] duration-700"
+            style={{ width: `${want.percent}%`, backgroundColor: "var(--chart-4)" }}
           />
         </div>
       </div>
@@ -256,7 +307,7 @@ export function PaymentMethodsChart({
   data: { method: string; amount: number; percent: number }[];
 }) {
   const config = {
-    percent: { label: "Share", color: "#128260" },
+    percent: { label: "Share", color: "var(--chart-1)" },
   } satisfies ChartConfig;
   const label = (value: string) =>
     value.charAt(0) + value.slice(1).toLowerCase();

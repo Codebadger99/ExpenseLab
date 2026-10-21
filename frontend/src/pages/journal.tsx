@@ -33,23 +33,24 @@ export function JournalPage({
   refreshKey: number;
 }) {
   const resource = useResource<Journal[]>("/journal", refreshKey);
-  const [filter, setFilter] = useState<"ALL" | "NEEDS_REVIEW">("ALL");
+  const [filter, setFilter] = useState<"ALL" | "NEEDS_REVIEW" | "REVIEWED">("ALL");
   const [entry, setEntry] = useState<Journal | null>(null);
+  const [selectedJournal, setSelectedJournal] = useState<Journal | null>(null);
   const [why, setWhy] = useState("");
   const [reflection, setReflection] = useState("");
   const [worth, setWorth] = useState<Worth>("YES");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState<Record<number, Journal>>({});
-  const entries = (resource.data ?? []).filter(
-    (item) => item.transaction.date.slice(0, 7) === month,
-  );
+  const entries = (resource.data ?? [])
+    .filter((item) => item.transaction.date.slice(0, 7) === month)
+    .map((item) => saved[item.id] ?? item);
   const needsReview = entries.filter(
     (item) => item.journalStatus === "NEEDS_REVIEW",
   );
-  const visible = (filter === "ALL" ? entries : needsReview).map(
-    (item) => saved[item.id] ?? item,
-  );
+  const reviewed = entries.filter((item) => item.journalStatus === "WORTH_IT");
+  const visible =
+    filter === "ALL" ? entries : filter === "NEEDS_REVIEW" ? needsReview : reviewed;
 
   function openEntry(item: Journal) {
     setEntry(item);
@@ -80,6 +81,7 @@ export function JournalPage({
           journalStatus: "WORTH_IT",
         },
       }));
+      setFilter("ALL");
       setEntry(null);
     } catch (reason) {
       setError(getErrorMessage(reason));
@@ -128,6 +130,12 @@ export function JournalPage({
         >
           Needs review ({needsReview!.length})
         </Button>
+        <Button
+          variant={filter === "REVIEWED" ? "default" : "outline"}
+          onClick={() => setFilter("REVIEWED")}
+        >
+          Reviewed ({reviewed.length})
+        </Button>
       </div>
       {visible.length ? (
         <div className="journal-list">
@@ -137,29 +145,29 @@ export function JournalPage({
             const reviewed = item.journalStatus === "WORTH_IT";
             return (
               <Card className="journal-item" key={item.id}>
-                <span className="category-icon journal-icon">
-                  <Icon size={16} />
-                </span>
-                <div className="journal-merchant">
-                  <strong>
-                    {transaction.merchant || label(transaction.category)}
-                  </strong>
-                  <span>
-                    {new Date(transaction.date).toLocaleDateString("en-NG", {
-                      day: "2-digit",
-                      month: "short",
-                      timeZone: "UTC",
-                    })}
-                  </span>
-                </div>
-                <strong className="journal-amount">
-                  {money(transaction.amount)}
-                </strong>
-                <Badge
-                  className={reviewed ? "within-budget-badge" : "review-badge"}
+                <button
+                  className="journal-item-trigger"
+                  onClick={() => setSelectedJournal(item)}
+                  aria-label={`View ${transaction.merchant || label(transaction.category)} journal details`}
                 >
-                  {reviewed ? "Reviewed" : "Needs review"}
-                </Badge>
+                  <span className="category-icon journal-icon">
+                    <Icon size={16} />
+                  </span>
+                  <span className="journal-merchant">
+                    <span className="journal-name-status">
+                      <strong>
+                        {transaction.merchant || label(transaction.category)}
+                      </strong>
+                      <Badge
+                        className={
+                          reviewed ? "within-budget-badge" : "review-badge"
+                        }
+                      >
+                        {reviewed ? "Reviewed" : "Needs review"}
+                      </Badge>
+                    </span>
+                  </span>
+                </button>
                 <Button
                   variant="outline"
                   className="write-entry"
@@ -178,17 +186,112 @@ export function JournalPage({
             title={
               filter === "NEEDS_REVIEW"
                 ? "Nothing waiting for review"
+                : filter === "REVIEWED"
+                  ? "No reviewed entries yet"
                 : "No expenses to reflect on"
             }
             description={
               filter === "NEEDS_REVIEW"
                 ? "You’ve added a little context to every purchase this month."
+                : filter === "REVIEWED"
+                  ? "Reviewed purchases will appear here."
                 : "Your expense journal will appear here as you track spending."
             }
             icon={BookOpen}
           />
         </Card>
       )}
+      <Dialog
+        open={!!selectedJournal}
+        onOpenChange={(open) => {
+          if (!open) setSelectedJournal(null);
+        }}
+      >
+        <DialogContent className="form-dialog journal-detail-dialog">
+          <DialogHeader>
+            <div className="journal-detail-heading">
+              <div>
+                <DialogTitle>
+                  {selectedJournal?.transaction.merchant ||
+                    (selectedJournal &&
+                      label(selectedJournal.transaction.category)) ||
+                    "Journal entry"}
+                </DialogTitle>
+                <DialogDescription>Purchase details and review                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+          {selectedJournal && (
+            <>
+              <Badge
+                className={`journal-detail-status ${selectedJournal.journalStatus === "WORTH_IT" ? "within-budget-badge" : "review-badge"}`}
+              >
+                {selectedJournal.journalStatus === "WORTH_IT"
+                  ? "Reviewed"
+                  : "Needs review"}
+              </Badge>
+              <dl className="journal-detail-grid">
+                <div>
+                  <dt>Price</dt>
+                  <dd>{money(selectedJournal.transaction.amount)}</dd>
+                </div>
+                <div>
+                  <dt>Date</dt>
+                  <dd>
+                    {new Date(
+                      selectedJournal.transaction.date,
+                    ).toLocaleDateString("en-NG", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                      timeZone: "UTC",
+                    })}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Category</dt>
+                  <dd>{label(selectedJournal.transaction.category)}</dd>
+                </div>
+                <div>
+                  <dt>Payment</dt>
+                  <dd>{label(selectedJournal.transaction.payment)}</dd>
+                </div>
+                {selectedJournal.why && (
+                  <div className="journal-detail-note">
+                    <dt>Why you bought it</dt>
+                    <dd>{selectedJournal.why}</dd>
+                  </div>
+                )}
+                {selectedJournal.worth && (
+                  <div>
+                    <dt>Worth it?</dt>
+                    <dd>{label(selectedJournal.worth)}</dd>
+                  </div>
+                )}
+                {selectedJournal.reflection && (
+                  <div className="journal-detail-note">
+                    <dt>Note to your future self</dt>
+                    <dd>{selectedJournal.reflection}</dd>
+                  </div>
+                )}
+              </dl>
+              <Button
+                className="journal-detail-edit"
+                variant="outline"
+                onClick={() => {
+                  openEntry(selectedJournal);
+                  setSelectedJournal(null);
+                }}
+              >
+                <Pencil size={14} />
+                {selectedJournal.journalStatus === "WORTH_IT"
+                  ? "Edit entry"
+                  : "Write entry"}
+              </Button>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
       <Dialog
         open={!!entry}
         onOpenChange={(open) => {

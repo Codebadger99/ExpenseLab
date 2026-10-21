@@ -1,9 +1,10 @@
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
 import {
   ChevronLeft,
   ChevronRight,
   CircleDollarSign,
+  Funnel,
   Search,
 } from "lucide-react";
 import type {
@@ -239,13 +240,32 @@ export function TransactionsPage({
   const [category, setCategory] = useState("ALL");
   const [desire, setDesire] = useState("ALL");
   const [payment, setPayment] = useState("ALL");
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
   const [page, setPage] = useState(1);
+  const [isSmallDevice, setIsSmallDevice] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 767px)").matches,
+  );
   const [editing, setEditing] = useState<Transaction | undefined>();
   const [editOpen, setEditOpen] = useState(false);
   const [deleting, setDeleting] = useState<Transaction | null>(null);
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState("");
-  const pageSize = 10;
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const updatePageSize = (event: MediaQueryListEvent) => {
+      setIsSmallDevice(event.matches);
+      setPage(1);
+    };
+
+    mediaQuery.addEventListener("change", updatePageSize);
+    return () => mediaQuery.removeEventListener("change", updatePageSize);
+  }, []);
+
+  const pageSize = isSmallDevice ? 10 : 20;
   const filtered = useMemo(
     () =>
       (resource.data ?? [])
@@ -266,33 +286,16 @@ export function TransactionsPage({
     (currentPage - 1) * pageSize,
     currentPage * pageSize,
   );
+  const activeFilterCount = [
+    search.trim() !== "",
+    category !== "ALL",
+    desire !== "ALL",
+    payment !== "ALL",
+  ].filter(Boolean).length;
 
-  async function deleteTransaction() {
-    if (!deleting) return;
-    setBusy(true);
-    setActionError("");
-    try {
-      await apiRequest(`/transaction/${deleting.id}`, { method: "DELETE" });
-      setDeleting(null);
-      onSaved();
-    } catch (reason) {
-      setActionError(getErrorMessage(reason));
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  if (resource.loading) return <PageSkeleton page="transactions" />;
-  if (resource.error)
-    return <ErrorState message={resource.error} onRetry={onSaved} />;
-
-  return (
-    <div className="page-stack">
-      <PageHeading
-        title="Transactions"
-        description="Every expense, in one place. Find, edit, and reflect on your spending."
-      />
-      <div className="filters-row">
+  function transactionFilters() {
+    return (
+      <>
         <label className="search-field">
           <Search size={16} />
           <Input
@@ -347,7 +350,174 @@ export function TransactionsPage({
             </option>
           ))}
         </select>
+      </>
+    );
+  }
+
+  function clearFilters() {
+    setSearch("");
+    setCategory("ALL");
+    setDesire("ALL");
+    setPayment("ALL");
+    setPage(1);
+  }
+
+  async function deleteTransaction() {
+    if (!deleting) return;
+    setBusy(true);
+    setActionError("");
+    try {
+      await apiRequest(`/transaction/${deleting.id}`, { method: "DELETE" });
+      setDeleting(null);
+      onSaved();
+    } catch (reason) {
+      setActionError(getErrorMessage(reason));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (resource.loading) return <PageSkeleton page="transactions" />;
+  if (resource.error)
+    return <ErrorState message={resource.error} onRetry={onSaved} />;
+
+  return (
+    <div className="page-stack">
+      <PageHeading
+        title="Transactions"
+        description="Every expense, in one place. Find, edit, and reflect on your spending."
+      />
+      <div className="filters-row">{transactionFilters()}</div>
+      <div className="mobile-filters">
+        <Button
+          variant="outline"
+          className="mobile-filters-trigger"
+          onClick={() => setFiltersOpen(true)}
+        >
+          <Funnel size={15} />
+          Filters
+          {activeFilterCount > 0 && (
+            <Badge variant="secondary">{activeFilterCount}</Badge>
+          )}
+        </Button>
+        {activeFilterCount > 0 && (
+          <span className="mobile-filter-summary">
+            {filtered.length} matching {filtered.length === 1 ? "transaction" : "transactions"}
+          </span>
+        )}
       </div>
+      <Dialog open={filtersOpen} onOpenChange={setFiltersOpen}>
+        <DialogContent className="form-dialog transaction-filter-dialog">
+          <DialogHeader>
+            <DialogTitle>Filter transactions</DialogTitle>
+            <DialogDescription>
+              Search and narrow down the transactions shown.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="transaction-filter-fields">{transactionFilters()}</div>
+          <div className="transaction-filter-actions">
+            <Button variant="outline" onClick={clearFilters}>
+              Clear filters
+            </Button>
+            <Button onClick={() => setFiltersOpen(false)}>Show {filtered.length} results</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        open={!!selectedTransaction}
+        onOpenChange={(open) => {
+          if (!open) setSelectedTransaction(null);
+        }}
+      >
+        <DialogContent className="form-dialog transaction-details-dialog">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedTransaction?.merchant ||
+                label(selectedTransaction?.incomeSources ?? "Income")}
+            </DialogTitle>
+            <DialogDescription>Transaction details and actions</DialogDescription>
+          </DialogHeader>
+          {selectedTransaction && (
+            <>
+              <dl className="transaction-detail-grid">
+                <div>
+                  <dt>Amount</dt>
+                  <dd>
+                    {selectedTransaction.type === "INCOME" ? "+" : ""}
+                    {money(selectedTransaction.amount)}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Date</dt>
+                  <dd>
+                    {new Date(selectedTransaction.date).toLocaleDateString(
+                      "en-NG",
+                      {
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric",
+                        timeZone: "UTC",
+                      },
+                    )}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Category</dt>
+                  <dd>
+                    {selectedTransaction.type === "INCOME"
+                      ? "Income"
+                      : label(selectedTransaction.category)}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Type</dt>
+                  <dd>
+                    {selectedTransaction.type === "INCOME"
+                      ? "Income"
+                      : label(selectedTransaction.desire)}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Payment</dt>
+                  <dd>{label(selectedTransaction.payment)}</dd>
+                </div>
+              </dl>
+              <div className="transaction-detail-actions">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setEditing(selectedTransaction);
+                    setSelectedTransaction(null);
+                    setEditOpen(true);
+                  }}
+                >
+                  Edit transaction
+                </Button>
+                {selectedTransaction.type === "EXPENSE" && (
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setSelectedTransaction(null);
+                      navigate("/journal");
+                    }}
+                  >
+                    Journal
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setDeleting(selectedTransaction);
+                    setSelectedTransaction(null);
+                  }}
+                >
+                  Delete
+                </Button>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
       <Card className="transactions-card">
         <div className="table-heading">
           <h2>Transactions</h2>
@@ -382,13 +552,23 @@ export function TransactionsPage({
                         })}
                       </td>
                       <td data-label="Merchant">
-                        <span className="merchant-name">
-                          <span className="category-icon">
-                            <Icon size={14} />
+                        <button
+                          className="transaction-card-trigger"
+                          aria-haspopup="dialog"
+                          onClick={() => setSelectedTransaction(item)}
+                        >
+                          <span className="merchant-name">
+                            <span className="category-icon">
+                              <Icon size={14} />
+                            </span>
+                            {item.merchant ||
+                              label(item.incomeSources ?? "Income")}
                           </span>
-                          {item.merchant ||
-                            label(item.incomeSources ?? "Income")}
-                        </span>
+                          <ChevronRight
+                            className="transaction-card-chevron"
+                            size={16}
+                          />
+                        </button>
                       </td>
                       <td data-label="Category" className="muted-cell">
                         {item.type === "INCOME"
@@ -465,30 +645,38 @@ export function TransactionsPage({
           />
         )}
         <div className="table-footer">
-          <span>
-            {filtered.length} results · Page {currentPage} of {pageCount}
+          <span className="table-results" aria-live="polite">
+            {filtered.length === 0
+              ? "No transactions"
+              : `Showing ${(currentPage - 1) * pageSize + 1}–${Math.min(currentPage * pageSize, filtered.length)} of ${filtered.length} transactions`}
           </span>
-          <div className="pagination">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={currentPage <= 1}
-              onClick={() => setPage((value) => value - 1)}
-            >
-              <ChevronLeft size={14} /> Prev
-            </Button>
-            <span>
-              {currentPage} / {pageCount}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={currentPage >= pageCount}
-              onClick={() => setPage((value) => value + 1)}
-            >
-              Next <ChevronRight size={14} />
-            </Button>
-          </div>
+          {pageCount > 1 && (
+            <nav className="pagination" aria-label="Transaction pages">
+              <Button
+                variant="outline"
+                size="sm"
+                aria-label="Previous page"
+                disabled={currentPage <= 1}
+                onClick={() => setPage((value) => value - 1)}
+              >
+                <ChevronLeft size={15} />
+                <span>Previous</span>
+              </Button>
+              <span aria-live="polite">
+                Page {currentPage} of {pageCount}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                aria-label="Next page"
+                disabled={currentPage >= pageCount}
+                onClick={() => setPage((value) => value + 1)}
+              >
+                <span>Next</span>
+                <ChevronRight size={15} />
+              </Button>
+            </nav>
+          )}
         </div>
       </Card>
       {actionError && (

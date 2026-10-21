@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Bell, CalendarDays, Check, Plus, Sprout } from "lucide-react";
 import {
   Link,
-  Navigate,
   Route,
   Routes,
   useLocation,
@@ -14,7 +13,6 @@ import type { Notification, User } from "./lib/types";
 import {
   currentMonth,
   formatDate,
-  monthName,
   NAVIGATION,
 } from "./lib/dashboard-data";
 import { AccountSettings } from "./components/account-settings";
@@ -37,7 +35,13 @@ import {
 } from "../components/ui/dialog";
 import { Skeleton } from "../components/ui/skeleton";
 
-function Notifications({ onRead }: { onRead: () => void }) {
+function Notifications({
+  onRead,
+  refreshKey,
+}: {
+  onRead: () => void;
+  refreshKey: number;
+}) {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<Notification[]>([]);
   const [count, setCount] = useState(0);
@@ -46,8 +50,7 @@ function Notifications({ onRead }: { onRead: () => void }) {
   const [pendingRead, setPendingRead] = useState<number | null>(null);
   const [markingAll, setMarkingAll] = useState(false);
 
-  async function refresh() {
-    setLoading(true);
+  const refresh = useCallback(async () => {
     try {
       const [notifications, unread] = await Promise.all([
         apiRequest<Notification[]>("/notifications"),
@@ -61,29 +64,24 @@ function Notifications({ onRead }: { onRead: () => void }) {
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
   useEffect(() => {
     let active = true;
-    Promise.all([
-      apiRequest<Notification[]>("/notifications"),
-      apiRequest<{ count: number }>("/notifications/unread-count"),
-    ])
-      .then(([notifications, unread]) => {
-        if (!active) return;
-        setItems(notifications);
-        setCount(unread.count);
-      })
-      .catch((reason: unknown) => {
-        if (active) setError(getErrorMessage(reason));
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
+    const refreshWhenVisible = () => {
+      if (active && document.visibilityState === "visible") void refresh();
+    };
+    refreshWhenVisible();
+    const interval = window.setInterval(refreshWhenVisible, 30_000);
+    window.addEventListener("focus", refreshWhenVisible);
+    document.addEventListener("visibilitychange", refreshWhenVisible);
     return () => {
       active = false;
+      window.clearInterval(interval);
+      window.removeEventListener("focus", refreshWhenVisible);
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
     };
-  }, []);
+  }, [refresh, refreshKey]);
 
   async function markRead(id: number) {
     setPendingRead(id);
@@ -117,10 +115,17 @@ function Notifications({ onRead }: { onRead: () => void }) {
         className="notification-trigger"
         variant="outline"
         aria-label={`Notifications, ${count} unread`}
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          void refresh();
+          setOpen(true);
+        }}
       >
         <Bell size={16} />
-        {count > 0 && <span>{count}</span>}
+        {count > 0 && (
+          <span className="notification-count">
+            {count > 99 ? "99+" : count}
+          </span>
+        )}
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="form-dialog notification-dialog">
@@ -344,6 +349,7 @@ export function Workspace({
             )}
             <ThemeToggle />
             <Notifications
+              refreshKey={refreshKey}
               onRead={() => setUnreadRefresh((current) => current + 1)}
             />
             <Button className="primary-action" onClick={() => setAddOpen(true)}>
@@ -407,11 +413,7 @@ export function Workspace({
                 <InsightsPage month={pageMonth} refreshKey={refreshKey} />
               }
             />
-            <Route path="*" element={<Navigate to="/overview" replace />} />
-
-            
           </Routes>
-          
         </section>
       </main>
       <TransactionDialog

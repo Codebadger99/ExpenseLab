@@ -1,13 +1,36 @@
-import { useState } from "react"
-import { BrowserRouter, Navigate, Route, Routes } from "react-router"
+import { useEffect, useState } from "react"
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router"
 import { AuthScreen, type AuthMode } from "./pages/auth"
 import { Workspace } from "./dashboard"
-import { ACCESS_TOKEN_KEY, USER_KEY } from "./lib/api"
+import {
+  ACCESS_TOKEN_KEY,
+  AUTH_REQUIRED_EVENT,
+  USER_KEY,
+} from "./lib/api"
 import type { User } from "./lib/types"
 import { ThemeProvider } from "./components/theme-toggle"
 import { LandingPage } from "./pages/landing"
+import { AccountRequiredPage, NotFoundPage } from "./pages/system-pages"
 
 type Session = { token: string; user: User }
+
+const PROTECTED_PATHS = [
+  "/overview",
+  "/transactions",
+  "/budgets",
+  "/goals",
+  "/journal",
+  "/insights",
+  "/onboarding/target",
+  "/onboarding/budgets",
+]
 
 function readSession(): Session | null {
   const token = localStorage.getItem(ACCESS_TOKEN_KEY)
@@ -24,6 +47,21 @@ function readSession(): Session | null {
 
 function AppRoutes() {
   const [session, setSession] = useState<Session | null>(readSession)
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    function handleAuthRequired() {
+      localStorage.removeItem(ACCESS_TOKEN_KEY)
+      localStorage.removeItem(USER_KEY)
+      setSession(null)
+      navigate("/account-required", { replace: true })
+    }
+
+    window.addEventListener(AUTH_REQUIRED_EVENT, handleAuthRequired)
+    return () =>
+      window.removeEventListener(AUTH_REQUIRED_EVENT, handleAuthRequired)
+  }, [navigate])
 
   function signIn(token: string, user: User) {
     localStorage.setItem(ACCESS_TOKEN_KEY, token)
@@ -51,10 +89,27 @@ function AppRoutes() {
         <Route path="/register" element={authRoute("register")} />
         <Route path="/forgot-password" element={authRoute("forgot")} />
         <Route path="/reset-password" element={authRoute("reset")} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route
+          path="/account-required"
+          element={<AccountRequiredPage />}
+        />
+        {PROTECTED_PATHS.map((path) => (
+          <Route
+            key={path}
+            path={path}
+            element={<AccountRequiredPage />}
+          />
+        ))}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     )
   }
+
+  if (location.pathname === "/") {
+    return <Navigate to="/overview" replace />
+  }
+
+  if (!PROTECTED_PATHS.includes(location.pathname)) return <NotFoundPage />
 
   return <Workspace user={session.user} onSignOut={signOut} onUserUpdate={updateUser} />
 }

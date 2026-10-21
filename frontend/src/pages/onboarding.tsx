@@ -140,21 +140,21 @@ export function OnboardingPage({
   }
 
   return (
-    <main className="onboarding-root min-h-screen bg-[#f5f7f3] px-4 py-10 text-[#1d332b] sm:px-6">
+    <main className="onboarding-root min-h-screen bg-background px-4 py-10 text-foreground sm:px-6">
       <div className="onboarding-screen mx-auto grid w-full max-w-3xl gap-7">
         <div className="flex items-center justify-between">
           <Link
             to="/overview"
             className="flex w-fit items-center gap-2 text-sm font-semibold tracking-tight"
           >
-            <Sprout className="text-[#128260]" size={20} /> ExpenseLab
+            <Sprout className="text-primary" size={20} /> ExpenseLab
           </Link>
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <Button
               type="button"
               variant="ghost"
-              className="gap-2 text-[#738078]"
+              className="gap-2 text-muted-foreground"
               onClick={onSignOut}
             >
               <LogOut size={15} /> Sign out
@@ -162,7 +162,7 @@ export function OnboardingPage({
           </div>
         </div>
         <div className="grid gap-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#128260]">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
             Your setup · {step === "target" ? "Step 1 of 2" : "Step 2 of 2"}
           </p>
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -170,22 +170,22 @@ export function OnboardingPage({
               ? "Set a monthly spending target"
               : "Give every category a limit"}
           </h1>
-          <p className="max-w-xl text-sm leading-6 text-[#738078]">
+          <p className="max-w-xl text-sm leading-6 text-muted-foreground">
             {step === "target"
               ? "Choose an amount to guide your monthly spending. You can adjust it any time."
               : "Allocate your target across categories. Your total can’t go over the amount you set."}
           </p>
         </div>
         {step === "target" ? (
-          <Card className="grid gap-6 rounded-2xl border-[#e2e9e2] bg-white p-6 shadow-sm sm:p-8">
+          <Card className="grid gap-6 rounded-2xl border-border bg-card p-6 text-card-foreground shadow-sm sm:p-8">
             <form
               className="grid gap-5"
               onSubmit={(event) => void saveTarget(event)}
             >
               <label className="grid gap-2 text-sm font-medium">
                 Monthly target (₦)
-                <div className="flex items-center gap-3 rounded-xl border border-[#e2e9e2] px-4 py-2 focus-within:border-[#128260]">
-                  <span className="text-sm text-[#738078]">₦</span>
+                <div className="flex items-center gap-3 rounded-xl border border-border px-4 py-2 focus-within:border-primary">
+                  <span className="text-sm text-muted-foreground">₦</span>
                   <Input
                     className="h-12 border-0 px-0 text-2xl font-semibold shadow-none focus-visible:ring-0"
                     type="number"
@@ -198,19 +198,19 @@ export function OnboardingPage({
                   />
                 </div>
               </label>
-              <div className="flex items-center justify-between rounded-xl bg-[#e8f4ee] p-4 text-sm">
-                <span className="text-[#617168]">Your monthly target</span>
-                <strong className="text-base text-[#0d654b]">
+              <div className="flex items-center justify-between rounded-xl bg-secondary p-4 text-sm text-secondary-foreground">
+                <span>Your monthly target</span>
+                <strong className="text-base">
                   {money(targetAmount)}
                 </strong>
               </div>
               {error && (
-                <p className="text-sm text-[#c44d3c]" role="alert">
+                <p className="text-sm text-destructive" role="alert">
                   {error}
                 </p>
               )}
               <Button
-                className="h-11 bg-[#128260] text-white hover:bg-[#0d7153]"
+                className="h-11"
                 type="submit"
                 disabled={busy}
                 aria-busy={busy}
@@ -229,22 +229,22 @@ export function OnboardingPage({
             </form>
           </Card>
         ) : (
-          <Card className="grid gap-5 rounded-2xl border-[#e2e9e2] bg-white p-5 shadow-sm sm:p-8">
-            <div className="grid gap-3 rounded-xl bg-[#0d3026] p-5 text-white sm:grid-cols-3">
+          <Card className="grid gap-5 rounded-2xl border-border bg-card p-5 text-card-foreground shadow-sm sm:p-8">
+            <div className="grid gap-3 rounded-xl bg-primary p-5 text-primary-foreground sm:grid-cols-3">
               <div>
-                <span className="text-xs text-[#b6c8bf]">Monthly target</span>
+                <span className="text-xs opacity-75">Monthly target</span>
                 <strong className="mt-1 block text-xl">
                   {money(targetAmount)}
                 </strong>
               </div>
               <div>
-                <span className="text-xs text-[#b6c8bf]">Allocated</span>
+                <span className="text-xs opacity-75">Allocated</span>
                 <strong className="mt-1 block text-xl">
                   {money(allocated)}
                 </strong>
               </div>
               <div>
-                <span className="text-xs text-[#b6c8bf]">Remaining</span>
+                <span className="text-xs opacity-75">Remaining</span>
                 <strong className="mt-1 block text-xl">
                   {money(remaining)}
                 </strong>
@@ -270,13 +270,13 @@ export function OnboardingPage({
                 <div className="grid gap-2 sm:grid-cols-2">
                   {categories.map((category) => (
                     <label
-                      className="grid gap-2 rounded-xl border border-[#e2e9e2] p-3 text-sm"
+                      className="grid gap-2 rounded-xl border border-border p-3 text-sm"
                       key={category}
                     >
                       <span className="font-medium">
                         {categoryName(category)}
                       </span>
-                      <span className="flex items-center gap-2 text-[#738078]">
+                      <span className="flex items-center gap-2 text-muted-foreground">
                         <span>₦</span>
                         <Input
                           aria-label={`${categoryName(category)} monthly limit`}
@@ -301,11 +301,11 @@ export function OnboardingPage({
                   ))}
                 </div>
                 {error && (
-                  <p className="text-sm text-[#c44d3c]" role="alert">
+                  <p className="text-sm text-destructive" role="alert">
                     {error}
                   </p>
                 )}
-                <div className="flex flex-col-reverse gap-2 border-t border-[#e2e9e2] pt-4 sm:flex-row sm:justify-between">
+                <div className="flex flex-col-reverse gap-2 border-t border-border pt-4 sm:flex-row sm:justify-between">
                   <Button
                     className="gap-2"
                     type="button"
@@ -318,7 +318,7 @@ export function OnboardingPage({
                     <ArrowLeft size={15} /> Edit target
                   </Button>
                   <Button
-                    className="gap-2 bg-[#128260] text-white hover:bg-[#0d7153]"
+                    className="gap-2"
                     type="submit"
                     disabled={busy || allocated > targetAmount}
                     aria-busy={busy}

@@ -79,7 +79,9 @@ export function InsightsPage({
 
   const messages = insights.data?.insights ?? [];
   const topThree = merchants.data?.merchants ?? [];
-  const topShare = topThree.reduce((total, item) => total + item.percent, 0);
+  const topShare = Number(
+    topThree.reduce((total, item) => total + item.percent, 0).toFixed(1),
+  );
   const weekendMessage = messages.find((item) => item.includes("weekends"));
   const dailyMessage = messages.find((item) => item.includes("daily spending"));
 
@@ -117,12 +119,12 @@ export function InsightsPage({
           icon={CalendarDays}
         />
         <InsightCard
-          value={topShare ? `${topShare}%` : "—"}
+          value={topShare ? `${topShare.toFixed(1)}%` : "—"}
           tone="green"
           title="Your top merchants"
           description={
             topThree.length
-              ? `${topThree.map((item) => label(item.merchant)).join(", ")} make up ${topShare}% of spending.`
+              ? `${topThree.map((item) => label(item.merchant)).join(", ")} make up ${topShare.toFixed(1)}% of spending.`
               : "Merchant patterns will appear when you record purchases."
           }
           icon={ShoppingBag}

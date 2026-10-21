@@ -50,6 +50,7 @@ export function PageSkeleton({ page }: { page: SkeletonPage }) {
         <div className="metric-grid four">{Array.from({ length: 4 }, (_, index) => <Skeleton key={index} className="h-24 rounded-xl" />)}</div>
         <Skeleton className="h-[270px] rounded-xl" />
         <div className="overview-bottom"><Skeleton className="h-[250px] rounded-xl" /><Skeleton className="h-[250px] rounded-xl" /></div>
+        <Skeleton className="h-[260px] rounded-xl" />
       </>
       break
     case "transactions":
@@ -103,12 +104,19 @@ export function PageSkeleton({ page }: { page: SkeletonPage }) {
       content = <>
         <HeadingSkeleton />
         <Skeleton className="h-[68px] rounded-lg" />
-        <div className="flex gap-2"><Skeleton className="h-8 w-14 rounded-md" /><Skeleton className="h-8 w-32 rounded-md" /></div>
+        <div className="flex flex-wrap gap-2"><Skeleton className="h-8 w-14 rounded-md" /><Skeleton className="h-8 w-32 rounded-md" /></div>
         <div className="journal-list">{Array.from({ length: 1 }, (_, index) => (
           <div className="journal-item" key={index}>
-            <Skeleton className="journal-icon h-[34px] w-[34px] rounded-lg" />
-            <div className="journal-merchant"><Skeleton className="h-3 w-28" /><Skeleton className="h-2 w-20" /></div>
-            <Skeleton className="h-4 w-20" /><Skeleton className="h-5 w-20 rounded-full" /><Skeleton className="h-[30px] w-24 rounded-md" />
+            <div className="journal-item-trigger journal-skeleton-trigger" aria-hidden="true">
+              <Skeleton className="journal-icon h-[34px] w-[34px] rounded-lg" />
+              <div className="journal-merchant journal-skeleton-merchant">
+                <span className="journal-name-status">
+                  <Skeleton className="h-3 w-20" />
+                  <Skeleton className="h-5 w-20 rounded-full" />
+                </span>
+              </div>
+            </div>
+            <Skeleton className="write-entry h-[30px] w-24 rounded-md" />
           </div>
         ))}</div>
       </>
@@ -119,6 +127,7 @@ export function PageSkeleton({ page }: { page: SkeletonPage }) {
         <div className="insight-cards">{Array.from({ length: 3 }, (_, index) => <Skeleton key={index} className="h-36 rounded-xl" />)}</div>
         <div className="metric-grid three">{Array.from({ length: 3 }, (_, index) => <Skeleton key={index} className="h-24 rounded-xl" />)}</div>
         <Skeleton className="h-[280px] rounded-xl" />
+        <Skeleton className="h-[330px] rounded-xl" />
         <div className="insights-bottom"><Skeleton className="h-[245px] rounded-xl" /><Skeleton className="h-[245px] rounded-xl" /></div>
         <Skeleton className="h-36 rounded-xl" />
       </>

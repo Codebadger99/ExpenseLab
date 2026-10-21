@@ -11,6 +11,7 @@ import {
 import type {
   Budget,
   Categories,
+  Goal,
   Overview,
   Transaction,
   Trends,
@@ -22,7 +23,11 @@ import {
   monthTransactions,
   money,
 } from "../lib/dashboard-data";
-import { CategoryDonutChart, DailySpendingChart } from "../components/charts";
+import {
+  CategoryDonutChart,
+  DailySpendingChart,
+  GoalProgressChart,
+} from "../components/charts";
 import {
   CurrencyInput,
   EmptyState,
@@ -75,12 +80,14 @@ export function OverviewPage({
   );
   const trends = useResource<Trends>(`/analytics/trends${query}`, refreshKey);
   const budgets = useResource<Budget[]>("/budget", refreshKey);
+  const goals = useResource<Goal[]>("/goal", refreshKey);
   const transactions = useResource<Transaction[]>("/transaction", refreshKey);
   const errors = [
     overview.error,
     categories.error,
     trends.error,
     budgets.error,
+    goals.error,
     transactions.error,
   ].filter(Boolean);
 
@@ -89,6 +96,7 @@ export function OverviewPage({
     categories.loading ||
     trends.loading ||
     budgets.loading ||
+    goals.loading ||
     transactions.loading
   )
     return <PageSkeleton page="overview" />;
@@ -217,13 +225,18 @@ export function OverviewPage({
       </div>
       <Card className="chart-card">
         <div className="section-head">
-          <div>
+          <div className="section-title">
             <h2>Daily spending</h2>
+            <Button
+              variant="ghost"
+              className="section-title-action"
+              aria-label="View transactions"
+              onClick={() => onNavigate("/transactions")}
+            >
+              <ArrowRight size={15} />
+            </Button>
             <p>Your spending rhythm across the month.</p>
           </div>
-          <Button variant="ghost" onClick={() => onNavigate("/transactions")}>
-            View transactions <ArrowRight size={14} />
-          </Button>
         </div>
         {trends.data?.daily.some((day) => day.amount > 0) ? (
           <DailySpendingChart data={trends.data.daily} />
@@ -238,8 +251,16 @@ export function OverviewPage({
       <div className="overview-bottom">
         <Card className="category-card">
           <div className="section-head">
-            <div>
+            <div className="section-title">
               <h2>By category</h2>
+              <Button
+                variant="ghost"
+                className="section-title-action"
+                aria-label="View transactions"
+                onClick={() => onNavigate("/transactions")}
+              >
+                <ArrowRight size={15} />
+              </Button>
               <p>Where your money went.</p>
             </div>
           </div>
@@ -254,13 +275,18 @@ export function OverviewPage({
         </Card>
         <Card className="budget-preview-card">
           <div className="section-head">
-            <div>
+            <div className="section-title">
               <h2>Budget progress</h2>
+              <Button
+                variant="ghost"
+                className="section-title-action"
+                aria-label="Manage budgets"
+                onClick={() => onNavigate("/budgets")}
+              >
+                <ArrowRight size={15} />
+              </Button>
               <p>Category spending against your limits.</p>
             </div>
-            <Button variant="ghost" onClick={() => onNavigate("/budgets")}>
-              Manage <ArrowRight size={14} />
-            </Button>
           </div>
           {budgetRows.length ? (
             <div className="budget-preview-list">
@@ -294,6 +320,37 @@ export function OverviewPage({
           )}
         </Card>
       </div>
+      <Card className="chart-card">
+        <div className="section-head">
+          <div className="section-title">
+            <h2>Savings goals</h2>
+            <Button
+              variant="ghost"
+              className="section-title-action"
+              aria-label="View savings goals"
+              onClick={() => onNavigate("/goals")}
+            >
+              <ArrowRight size={15} />
+            </Button>
+            <p>See how your savings are tracking against each target.</p>
+          </div>
+        </div>
+        {goals.data?.length ? (
+          <GoalProgressChart
+            data={goals.data.map((goal) => ({
+              name: goal.name,
+              saved: goal.saved,
+              target: goal.target,
+            }))}
+          />
+        ) : (
+          <EmptyState
+            title="No savings goals yet"
+            description="Create a goal to track your progress towards it here."
+            icon={Wallet}
+          />
+        )}
+      </Card>
       <Dialog open={targetOpen} onOpenChange={setTargetOpen}>
         <DialogContent className="form-dialog">
           <DialogHeader>

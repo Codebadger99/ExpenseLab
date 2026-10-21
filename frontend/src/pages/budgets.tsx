@@ -34,6 +34,7 @@ export function BudgetsPage({
   const transactions = useResource<Transaction[]>("/transaction", refreshKey);
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState<Category | null>(null);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [error, setError] = useState("");
   if (budgets.loading || transactions.loading)
     return <PageSkeleton page="budgets" />;
@@ -78,6 +79,7 @@ export function BudgetsPage({
         delete next[category];
         return next;
       });
+      setEditingCategory(null);
       onSaved();
     } catch (reason) {
       setError(getErrorMessage(reason));
@@ -111,7 +113,10 @@ export function BudgetsPage({
           const remaining = item.limit - item.spent;
           const draft = drafts[item.category] ?? String(item.limit || "");
           return (
-            <Card className="budget-card" key={item.category}>
+            <Card
+              className={`budget-card ${editingCategory === item.category ? "budget-card-editing" : ""}`}
+              key={item.category}
+            >
               <div className="budget-card-heading">
                 <div className="budget-category">
                   <span className="category-icon">
@@ -127,6 +132,7 @@ export function BudgetsPage({
               </div>
               <form
                 className="limit-form"
+                id={`limit-form-${item.category}`}
                 onSubmit={(event) => {
                   event.preventDefault();
                   void save(item.category, item.limit);
@@ -168,6 +174,15 @@ export function BudgetsPage({
                     "Save"
                   )}
                 </Button>
+                <Button
+                  className="cancel-limit"
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setEditingCategory(null)}
+                >
+                  Cancel
+                </Button>
               </form>
               <div className={`budget-spent ${over ? "text-danger" : ""}`}>
                 <strong>{money(item.spent)}</strong>
@@ -181,6 +196,20 @@ export function BudgetsPage({
                   }}
                 />
               </div>
+              <Button
+                className="budget-mobile-edit"
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  setEditingCategory((current) =>
+                    current === item.category ? null : item.category,
+                  )
+                }
+                aria-expanded={editingCategory === item.category}
+                aria-controls={`limit-form-${item.category}`}
+              >
+                {editingCategory === item.category ? "Close" : "Edit limit"}
+              </Button>
               <p className={`budget-remaining ${over ? "text-danger" : ""}`}>
                 {item.limit === 0
                   ? "Set a monthly limit to track this category"
