@@ -25,7 +25,7 @@ export function AccountRequiredPage() {
           goals, and journal.
         </p>
         <div className="standalone-actions">
-          <Button className="standalone-primary-action" asChild>
+          <Button asChild>
             <Link to="/register">
               Create an account <ArrowRight size={16} />
             </Link>
@@ -63,7 +63,7 @@ export function NotFoundPage() {
           or head back to a page that exists.
         </p>
         <div className="standalone-actions">
-          <Button className="standalone-primary-action" asChild>
+          <Button asChild>
             <Link to="/">
               Go to home <ArrowRight size={16} />
             </Link>

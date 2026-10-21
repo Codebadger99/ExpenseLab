@@ -244,28 +244,25 @@ export function TransactionsPage({
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
   const [page, setPage] = useState(1);
-  const [isSmallDevice, setIsSmallDevice] = useState(
-    () =>
-      typeof window !== "undefined" &&
-      window.matchMedia("(max-width: 767px)").matches,
-  );
   const [editing, setEditing] = useState<Transaction | undefined>();
   const [editOpen, setEditOpen] = useState(false);
   const [deleting, setDeleting] = useState<Transaction | null>(null);
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState("");
+  const [pageSize, setPageSize] = useState(20);
+
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 767px)");
-    const updatePageSize = (event: MediaQueryListEvent) => {
-      setIsSmallDevice(event.matches);
+    const mobileQuery = window.matchMedia("(max-width: 900px)");
+    const updatePageSize = () => {
+      setPageSize(mobileQuery.matches ? 10 : 20);
       setPage(1);
     };
 
-    mediaQuery.addEventListener("change", updatePageSize);
-    return () => mediaQuery.removeEventListener("change", updatePageSize);
+    updatePageSize();
+    mobileQuery.addEventListener("change", updatePageSize);
+    return () => mobileQuery.removeEventListener("change", updatePageSize);
   }, []);
 
-  const pageSize = isSmallDevice ? 10 : 20;
   const filtered = useMemo(
     () =>
       (resource.data ?? [])

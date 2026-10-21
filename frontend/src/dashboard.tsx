@@ -322,7 +322,11 @@ export function Workspace({
               <small>Personal account</small>
             </span>
           </div>
-          <AccountSettings onSignOut={onSignOut} onDeleted={onSignOut} />
+          <AccountSettings
+            email={user.email}
+            onSignOut={onSignOut}
+            onDeleted={onSignOut}
+          />
         </div>
       </aside>
       <main className="workspace-main">

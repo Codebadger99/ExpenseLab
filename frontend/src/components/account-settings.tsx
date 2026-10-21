@@ -1,12 +1,14 @@
 ﻿import { useState, type FormEvent } from "react"
 import { LogOut, Settings2, Trash2 } from "lucide-react"
+import { useNavigate } from "react-router"
 import { Button } from "../../components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../components/ui/dialog"
 import { Input } from "../../components/ui/input"
 import { apiRequest, getErrorMessage } from "../lib/api"
 import { LoadingSpinner } from "./workspace-ui"
 
-export function AccountSettings({ onSignOut, onDeleted }: { onSignOut: () => void; onDeleted: () => void }) {
+export function AccountSettings({ email, onSignOut, onDeleted }: { email: string; onSignOut: () => void; onDeleted: () => void }) {
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [password, setPassword] = useState("")
@@ -26,6 +28,12 @@ export function AccountSettings({ onSignOut, onDeleted }: { onSignOut: () => voi
     } finally {
       setBusy(false)
     }
+  }
+
+  function resetPasswordBeforeDeleting() {
+    setDeleteOpen(false)
+    onSignOut()
+    navigate("/forgot-password", { state: { email } })
   }
 
   return <>
@@ -49,6 +57,13 @@ export function AccountSettings({ onSignOut, onDeleted }: { onSignOut: () => voi
         <form className="dialog-form" onSubmit={(event) => void deleteAccount(event)}>
           <label className="form-field"><span>Current password</span><Input type="password" autoComplete="current-password" maxLength={128} value={password} onChange={(event) => setPassword(event.target.value)} required /></label>
           <label className="flex cursor-pointer items-start gap-2 text-xs leading-5 text-[#59675f]"><input type="checkbox" checked={confirmed} onChange={(event) => setConfirmed(event.target.checked)} required /><span>I understand this permanently deletes my account and data.</span></label>
+          <button
+            className="delete-password-help"
+            type="button"
+            onClick={resetPasswordBeforeDeleting}
+          >
+            Forgot your password? Reset it first
+          </button>
           {error && <p className="form-error" role="alert">{error}</p>}
           <div className="confirm-actions"><Button type="button" variant="outline" onClick={() => setDeleteOpen(false)}>Cancel</Button><Button type="submit" variant="destructive" disabled={busy || !confirmed || !password} aria-busy={busy}>{busy ? <>Deleting… <LoadingSpinner /></> : "Delete account"}</Button></div>
         </form>

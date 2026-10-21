@@ -17,16 +17,6 @@ import {
   type ChartConfig,
 } from "../../components/ui/chart";
 
-const palette = [
-  "var(--chart-1)",
-  "var(--chart-2)",
-  "var(--chart-3)",
-  "var(--chart-4)",
-  "var(--chart-5)",
-  "var(--chart-6)",
-  "var(--chart-7)",
-  "var(--chart-8)",
-];
 const currency = (value: number) =>
   new Intl.NumberFormat("en-NG", {
     style: "currency",
@@ -52,8 +42,8 @@ export type DailySpendingPoint = {
 
 export function DailySpendingChart({ data }: { data: DailySpendingPoint[] }) {
   const config = {
-    amount: { label: "Daily spending", color: "var(--chart-1)" },
-    movingAverage7: { label: "7-day average", color: "var(--chart-4)" },
+    amount: { label: "Daily spending", color: "#128260" },
+    movingAverage7: { label: "7-day average", color: "#d9bc84" },
   } satisfies ChartConfig;
 
   return (
@@ -161,6 +151,16 @@ export function CategoryDonutChart({
 }: {
   data: { category: string; amount: number; percent: number }[];
 }) {
+  const palette = [
+    "#128260",
+    "#80b39c",
+    "#b8cba7",
+    "#dabd84",
+    "#7c9291",
+    "#b4a5bd",
+    "#e2a38c",
+    "#9ca99e",
+  ];
   const config = Object.fromEntries(
     data.map((item, index) => [
       item.category,
@@ -170,59 +170,59 @@ export function CategoryDonutChart({
       },
     ]),
   ) satisfies ChartConfig;
+  const totalSpent = data.reduce((total, item) => total + item.amount, 0);
+
   return (
-    <div className="grid items-center gap-4 sm:grid-cols-[minmax(140px,0.8fr)_minmax(150px,1.2fr)]">
-      <ChartContainer
-        config={config}
-        className="mx-auto h-[180px] w-full max-w-[190px]"
-      >
-        <PieChart>
-          <ChartTooltip
-            content={
-              <ChartTooltipContent
-                nameKey="category"
-                formatter={(value) => currency(Number(value))}
-              />
-            }
-          />
-          <Pie
-            data={data}
-            dataKey="amount"
-            nameKey="category"
-            innerRadius="64%"
-            outerRadius="88%"
-            paddingAngle={2}
-            isAnimationActive
-            animationDuration={700}
-          >
-            {data.map((item, index) => (
-              <Cell
-                key={item.category}
-                fill={palette[index % palette.length]}
-              />
-            ))}
-          </Pie>
-        </PieChart>
-      </ChartContainer>
-      <ul className="category-legend grid gap-2.5">
-        {data.map((item, index) => (
-          <li
-            className="grid grid-cols-[8px_1fr_auto] items-center gap-2 text-xs"
-            key={item.category}
-          >
-            <span
-              className="h-2 w-2 rounded-full"
-              style={{ backgroundColor: palette[index % palette.length] }}
+    <div className="category-pie-layout">
+      <div className="category-pie-visual">
+        <ChartContainer config={config} className="category-pie-chart">
+          <PieChart>
+            <ChartTooltip
+              content={
+                <ChartTooltipContent
+                  nameKey="category"
+                  formatter={(value) => currency(Number(value))}
+                />
+              }
             />
-            <span className="category-legend-label" style={{ color: "var(--muted)" }}>
+            <Pie
+              data={data}
+              dataKey="amount"
+              nameKey="category"
+              innerRadius="62%"
+              outerRadius="88%"
+              paddingAngle={data.length > 1 ? 2 : 0}
+              stroke="var(--paper)"
+              strokeWidth={2}
+              isAnimationActive
+              animationDuration={700}
+            >
+              {data.map((item, index) => (
+                <Cell
+                  key={item.category}
+                  fill={palette[index % palette.length]}
+                />
+              ))}
+            </Pie>
+          </PieChart>
+        </ChartContainer>
+        <div className="category-pie-total">
+          <span>Total spent</span>
+          <strong>{currency(totalSpent)}</strong>
+        </div>
+      </div>
+      <ul className="category-breakdown-list" aria-label="Spending by category">
+        {data.map((item, index) => (
+          <li className="category-breakdown-item" key={item.category}>
+            <span
+              className="category-breakdown-dot"
+              style={{ backgroundColor: palette[index % palette.length] }}
+              aria-hidden="true"
+            />
+            <span className="category-breakdown-name">
               {item.category.charAt(0) + item.category.slice(1).toLowerCase()}
             </span>
-            <strong
-              className="category-legend-value"
-              style={{ color: "var(--ink)" }}
-            >
-              {currency(item.amount)}
-            </strong>
+            <strong>{currency(item.amount)}</strong>
           </li>
         ))}
       </ul>
@@ -242,8 +242,8 @@ export function NeedsWantsChart({
     { name: "want", amount: want.amount },
   ];
   const config = {
-    need: { label: "Needs", color: "var(--chart-1)" },
-    want: { label: "Wants", color: "var(--chart-4)" },
+    need: { label: "Needs", color: "#128260" },
+    want: { label: "Wants", color: "#d9bc84" },
   } satisfies ChartConfig;
   return (
     <div className="grid items-center gap-4 sm:grid-cols-[160px_1fr]">
@@ -277,23 +277,23 @@ export function NeedsWantsChart({
       </ChartContainer>
       <div className="grid gap-3">
         <div className="flex items-center justify-between gap-3">
-          <span className="text-xs text-muted-foreground">Needs</span>
+          <span className="text-xs text-[#738078]">Needs</span>
           <strong className="text-lg">{need.percent}%</strong>
         </div>
-        <div className="h-2 overflow-hidden rounded-full bg-muted">
+        <div className="h-2 overflow-hidden rounded-full bg-[#edf0eb]">
           <span
-            className="block h-full rounded-full transition-[width] duration-700"
-            style={{ width: `${need.percent}%`, backgroundColor: "var(--chart-1)" }}
+            className="block h-full rounded-full bg-[#128260] transition-[width] duration-700"
+            style={{ width: `${need.percent}%` }}
           />
         </div>
         <div className="flex items-center justify-between gap-3">
-          <span className="text-xs text-muted-foreground">Wants</span>
+          <span className="text-xs text-[#738078]">Wants</span>
           <strong className="text-lg">{want.percent}%</strong>
         </div>
-        <div className="h-2 overflow-hidden rounded-full bg-muted">
+        <div className="h-2 overflow-hidden rounded-full bg-[#edf0eb]">
           <span
-            className="block h-full rounded-full transition-[width] duration-700"
-            style={{ width: `${want.percent}%`, backgroundColor: "var(--chart-4)" }}
+            className="block h-full rounded-full bg-[#d9bc84] transition-[width] duration-700"
+            style={{ width: `${want.percent}%` }}
           />
         </div>
       </div>
@@ -307,7 +307,7 @@ export function PaymentMethodsChart({
   data: { method: string; amount: number; percent: number }[];
 }) {
   const config = {
-    percent: { label: "Share", color: "var(--chart-1)" },
+    percent: { label: "Share", color: "#128260" },
   } satisfies ChartConfig;
   const label = (value: string) =>
     value.charAt(0) + value.slice(1).toLowerCase();
