@@ -78,7 +78,11 @@ function AppRoutes() {
 
   if (!session) {
     const authRoute = (mode: AuthMode) => (
-      <AuthScreen mode={mode} onAuthenticated={signIn} />
+      <AuthScreen
+        key={location.pathname}
+        mode={mode}
+        onAuthenticated={signIn}
+      />
     );
     return (
       <Routes>

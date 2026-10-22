@@ -2784,13 +2784,13 @@ a {
     padding: 0 4px;
   }
 
-  .primary-action {
+  .topbar-actions > .primary-action {
     width: 31px;
     height: 30px;
     padding: 0;
   }
 
-  .primary-action span {
+  .topbar-actions > .primary-action span {
     display: none;
   }
 

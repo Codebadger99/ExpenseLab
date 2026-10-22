@@ -22,9 +22,10 @@ export function AuthScreen({
   const navigate = useNavigate();
   const location = useLocation();
   const [name, setName] = useState("");
-  const [email, setEmail] = useState(
-    (location.state as { email?: string } | null)?.email ?? "",
-  );
+  const [email, setEmail] = useState(() => {
+    const state = location.state as { email?: string } | null;
+    return (mode === "forgot" || mode === "reset") ? state?.email ?? "" : "";
+  });
   const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
@@ -240,7 +241,9 @@ export function AuthScreen({
         {isReset && (
           <p className="auth-switch">
             Didn’t receive a code?{" "}
-            <Link to="/forgot-password">Send another</Link>
+            <Link to="/forgot-password" state={{ email }}>
+              Send another
+            </Link>
           </p>
         )}
         {(isRegister || mode === "login") && (
