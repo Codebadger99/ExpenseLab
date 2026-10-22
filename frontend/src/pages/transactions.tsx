@@ -462,7 +462,8 @@ export function TransactionsPage({
         </Button>
         {activeFilterCount > 0 && (
           <span className="mobile-filter-summary">
-            {filtered.length} matching {filtered.length === 1 ? "transaction" : "transactions"}
+            {filtered.length} matching{" "}
+            {filtered.length === 1 ? "transaction" : "transactions"}
           </span>
         )}
       </div>
@@ -474,12 +475,16 @@ export function TransactionsPage({
               Search and narrow down the transactions shown.
             </DialogDescription>
           </DialogHeader>
-          <div className="transaction-filter-fields">{transactionFilters()}</div>
+          <div className="transaction-filter-fields">
+            {transactionFilters()}
+          </div>
           <div className="transaction-filter-actions">
             <Button variant="outline" onClick={clearFilters}>
               Clear filters
             </Button>
-            <Button onClick={() => setFiltersOpen(false)}>Show {filtered.length} results</Button>
+            <Button onClick={() => setFiltersOpen(false)}>
+              Show {filtered.length} results
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -496,7 +501,9 @@ export function TransactionsPage({
                 ? transactionName(selectedTransaction)
                 : "Transaction"}
             </DialogTitle>
-            <DialogDescription>Transaction details and actions</DialogDescription>
+            <DialogDescription>
+              Transaction details and actions
+            </DialogDescription>
           </DialogHeader>
           {selectedTransaction && (
             <>

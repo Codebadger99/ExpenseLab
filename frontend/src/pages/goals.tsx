@@ -258,12 +258,22 @@ export function GoalsPage({
                   />
                 </Field>
                 <Field label="Target amount">
-                  <CurrencyInput value={target} onChange={setTarget} min={1} step={1} />
+                  <CurrencyInput
+                    value={target}
+                    onChange={setTarget}
+                    min={1}
+                    step={1}
+                  />
                 </Field>
               </>
             ) : (
               <Field label="Contribution amount">
-                <CurrencyInput value={amount} onChange={setAmount} min={1} step={1} />
+                <CurrencyInput
+                  value={amount}
+                  onChange={setAmount}
+                  min={1}
+                  step={1}
+                />
               </Field>
             )}
             {formError && (

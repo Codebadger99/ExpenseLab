@@ -135,7 +135,9 @@ export function BudgetsPage({
                 id={`limit-form-${item.category}`}
                 onSubmit={(event) => {
                   event.preventDefault();
-                  const validationError = getFormValidationError(event.currentTarget);
+                  const validationError = getFormValidationError(
+                    event.currentTarget,
+                  );
                   if (validationError) {
                     setErrorCategory(item.category);
                     setError(validationError);

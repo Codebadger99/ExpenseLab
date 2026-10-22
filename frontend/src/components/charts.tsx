@@ -116,9 +116,7 @@ export function GoalProgressChart({
     <div className="goal-progress-chart" aria-label="Savings goal progress">
       {data.map((goal, index) => {
         const percentage =
-          goal.target > 0
-            ? Math.round((goal.saved / goal.target) * 100)
-            : 0;
+          goal.target > 0 ? Math.round((goal.saved / goal.target) * 100) : 0;
         const progress = Math.min(Math.max(percentage, 0), 100);
         return (
           <div className="goal-progress-item" key={`${goal.name}-${index}`}>
@@ -175,7 +173,10 @@ export function CategoryDonutChart({
   return (
     <div className="category-pie-layout">
       <div className="category-pie-visual">
-        <ChartContainer config={config} className="chart-static category-pie-chart">
+        <ChartContainer
+          config={config}
+          className="chart-static category-pie-chart"
+        >
           <PieChart>
             <Pie
               data={data}

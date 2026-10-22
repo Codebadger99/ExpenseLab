@@ -34,7 +34,9 @@ export function JournalPage({
   refreshKey: number;
 }) {
   const resource = useResource<Journal[]>("/journal", refreshKey);
-  const [filter, setFilter] = useState<"ALL" | "NEEDS_REVIEW" | "REVIEWED">("ALL");
+  const [filter, setFilter] = useState<"ALL" | "NEEDS_REVIEW" | "REVIEWED">(
+    "ALL",
+  );
   const [entry, setEntry] = useState<Journal | null>(null);
   const [selectedJournal, setSelectedJournal] = useState<Journal | null>(null);
   const [why, setWhy] = useState("");
@@ -51,7 +53,11 @@ export function JournalPage({
   );
   const reviewed = entries.filter((item) => item.journalStatus === "WORTH_IT");
   const visible =
-    filter === "ALL" ? entries : filter === "NEEDS_REVIEW" ? needsReview : reviewed;
+    filter === "ALL"
+      ? entries
+      : filter === "NEEDS_REVIEW"
+        ? needsReview
+        : reviewed;
 
   function openEntry(item: Journal) {
     setEntry(item);
@@ -198,14 +204,14 @@ export function JournalPage({
                 ? "Nothing waiting for review"
                 : filter === "REVIEWED"
                   ? "No reviewed entries yet"
-                : "No expenses to reflect on"
+                  : "No expenses to reflect on"
             }
             description={
               filter === "NEEDS_REVIEW"
                 ? "You’ve added a little context to every purchase this month."
                 : filter === "REVIEWED"
                   ? "Reviewed purchases will appear here."
-                : "Your expense journal will appear here as you track spending."
+                  : "Your expense journal will appear here as you track spending."
             }
             icon={BookOpen}
           />
@@ -227,7 +233,9 @@ export function JournalPage({
                       label(selectedJournal.transaction.category)) ||
                     "Journal entry"}
                 </DialogTitle>
-                <DialogDescription>Purchase details and review                </DialogDescription>
+                <DialogDescription>
+                  Purchase details and review{" "}
+                </DialogDescription>
               </div>
             </div>
           </DialogHeader>
@@ -327,9 +335,7 @@ export function JournalPage({
             <Field label="Was it worth it?">
               <select
                 value={worth}
-                onChange={(event) =>
-                  setWorth(event.target.value as Worth | "")
-                }
+                onChange={(event) => setWorth(event.target.value as Worth | "")}
                 required
               >
                 <option value="" disabled>
