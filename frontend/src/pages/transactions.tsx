@@ -46,6 +46,13 @@ import {
 import { Input } from "../../components/ui/input";
 import { useResource } from "./page-data";
 
+function transactionName(transaction: Transaction): string {
+  if (transaction.merchant?.trim()) return transaction.merchant.trim();
+  return transaction.type === "INCOME"
+    ? label(transaction.incomeSources ?? "Income")
+    : label(transaction.category);
+}
+
 export function TransactionDialog({
   open,
   onOpenChange,
@@ -59,20 +66,20 @@ export function TransactionDialog({
 }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [type, setType] = useState<TransactionType>(initial?.type ?? "EXPENSE");
+  const [type, setType] = useState<TransactionType | "">(initial?.type ?? "");
   const [amount, setAmount] = useState(initial ? String(initial.amount) : "");
   const [merchant, setMerchant] = useState(initial?.merchant ?? "");
   const [date, setDate] = useState(initial?.date.slice(0, 10) ?? localDate());
   const today = localDate();
-  const [category, setCategory] = useState<Category>(
-    initial?.category ?? "FOOD",
+  const [category, setCategory] = useState<Category | "">(
+    initial?.category ?? "",
   );
-  const [desire, setDesire] = useState<Desire>(initial?.desire ?? "NEED");
-  const [payment, setPayment] = useState<PaymentMethod>(
-    initial?.payment ?? "TRANSFER",
+  const [desire, setDesire] = useState<Desire | "">(initial?.desire ?? "");
+  const [payment, setPayment] = useState<PaymentMethod | "">(
+    initial?.payment ?? "",
   );
-  const [incomeSource, setIncomeSource] = useState(
-    initial?.incomeSources ?? "SALARY",
+  const [incomeSource, setIncomeSource] = useState<string>(
+    initial?.incomeSources ?? "",
   );
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -80,6 +87,24 @@ export function TransactionDialog({
     const validationError = getFormValidationError(event.currentTarget);
     if (validationError) {
       setError(validationError);
+      return;
+    }
+    if (!type || !payment) {
+      setError("Choose a transaction type and payment method.");
+      return;
+    }
+    if (type === "EXPENSE" && (!category || !desire)) {
+      setError("Choose a category and whether this is a need or want.");
+      return;
+    }
+    if (type === "INCOME" && !incomeSource) {
+      setError("Choose an income source.");
+      return;
+    }
+    if (!merchant.trim()) {
+      setError(
+        `Enter a ${type === "EXPENSE" ? "merchant" : "description"} for this transaction.`,
+      );
       return;
     }
     if (date > today) {
@@ -92,7 +117,7 @@ export function TransactionDialog({
       type,
       amount,
       date: `${date}T12:00:00.000Z`,
-      merchant: merchant.trim() || undefined,
+      merchant: merchant.trim(),
       payment,
       ...(type === "EXPENSE" ? { category, desire } : { incomeSource }),
     };
@@ -128,10 +153,17 @@ export function TransactionDialog({
           <Field label="Type">
             <select
               value={type}
-              onChange={(event) =>
-                setType(event.target.value as TransactionType)
-              }
+              onChange={(event) => {
+                setType(event.target.value as TransactionType | "");
+                setCategory("");
+                setDesire("");
+                setIncomeSource("");
+              }}
+              required
             >
+              <option value="" disabled>
+                Choose an option
+              </option>
               <option value="EXPENSE">Expense</option>
               <option value="INCOME">Income</option>
             </select>
@@ -139,12 +171,21 @@ export function TransactionDialog({
           <Field label="Amount">
             <CurrencyInput value={amount} onChange={setAmount} min={0.01} />
           </Field>
-          <Field label={type === "EXPENSE" ? "Merchant" : "Description"}>
+          <Field
+            label={
+              type === "INCOME"
+                ? "Description"
+                : type === "EXPENSE"
+                  ? "Merchant"
+                  : "Merchant or description"
+            }
+          >
             <Input
               maxLength={80}
               value={merchant}
               onChange={(event) => setMerchant(event.target.value)}
               placeholder="e.g. Groceries"
+              required
             />
           </Field>
           <Field label="Date">
@@ -162,9 +203,13 @@ export function TransactionDialog({
                 <select
                   value={category}
                   onChange={(event) =>
-                    setCategory(event.target.value as Category)
+                    setCategory(event.target.value as Category | "")
                   }
+                  required
                 >
+                  <option value="" disabled>
+                    Choose an option
+                  </option>
                   {CATEGORIES.map((item) => (
                     <option key={item} value={item}>
                       {label(item)}
@@ -175,19 +220,29 @@ export function TransactionDialog({
               <Field label="Need or want">
                 <select
                   value={desire}
-                  onChange={(event) => setDesire(event.target.value as Desire)}
+                  onChange={(event) =>
+                    setDesire(event.target.value as Desire | "")
+                  }
+                  required
                 >
+                  <option value="" disabled>
+                    Choose an option
+                  </option>
                   <option value="NEED">Need</option>
                   <option value="WANT">Want</option>
                 </select>
               </Field>
             </>
-          ) : (
+          ) : type === "INCOME" ? (
             <Field label="Income source">
               <select
                 value={incomeSource}
                 onChange={(event) => setIncomeSource(event.target.value)}
+                required
               >
+                <option value="" disabled>
+                  Choose an option
+                </option>
                 {["SALARY", "BUSINESS", "GIFT", "OTHER"].map((item) => (
                   <option key={item} value={item}>
                     {label(item)}
@@ -195,14 +250,18 @@ export function TransactionDialog({
                 ))}
               </select>
             </Field>
-          )}
+          ) : null}
           <Field label="Payment method">
             <select
               value={payment}
               onChange={(event) =>
-                setPayment(event.target.value as PaymentMethod)
+                setPayment(event.target.value as PaymentMethod | "")
               }
+              required
             >
+              <option value="" disabled>
+                Choose an option
+              </option>
               {["TRANSFER", "CASH", "CARD", "USSD", "POS"].map((item) => (
                 <option key={item} value={item}>
                   {label(item)}
@@ -274,9 +333,7 @@ export function TransactionsPage({
       (resource.data ?? [])
         .filter((item) => item.date.slice(0, 7) === month)
         .filter((item) =>
-          `${item.merchant ?? ""} ${item.incomeSources ?? ""}`
-            .toLowerCase()
-            .includes(search.toLowerCase()),
+          transactionName(item).toLowerCase().includes(search.toLowerCase()),
         )
         .filter((item) => category === "ALL" || item.category === category)
         .filter((item) => desire === "ALL" || item.desire === desire)
@@ -435,8 +492,9 @@ export function TransactionsPage({
         <DialogContent className="form-dialog transaction-details-dialog">
           <DialogHeader>
             <DialogTitle>
-              {selectedTransaction?.merchant ||
-                label(selectedTransaction?.incomeSources ?? "Income")}
+              {selectedTransaction
+                ? transactionName(selectedTransaction)
+                : "Transaction"}
             </DialogTitle>
             <DialogDescription>Transaction details and actions</DialogDescription>
           </DialogHeader>
@@ -564,8 +622,7 @@ export function TransactionsPage({
                             <span className="category-icon">
                               <Icon size={14} />
                             </span>
-                            {item.merchant ||
-                              label(item.incomeSources ?? "Income")}
+                            {transactionName(item)}
                           </span>
                           <ChevronRight
                             className="transaction-card-chevron"

@@ -39,7 +39,7 @@ export function JournalPage({
   const [selectedJournal, setSelectedJournal] = useState<Journal | null>(null);
   const [why, setWhy] = useState("");
   const [reflection, setReflection] = useState("");
-  const [worth, setWorth] = useState<Worth>("YES");
+  const [worth, setWorth] = useState<Worth | "">("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState<Record<number, Journal>>({});
@@ -57,7 +57,7 @@ export function JournalPage({
     setEntry(item);
     setWhy(item.why ?? "");
     setReflection(item.reflection ?? "");
-    setWorth(item.worth ?? "YES");
+    setWorth(item.worth ?? "");
     setError("");
   }
 
@@ -69,6 +69,10 @@ export function JournalPage({
       return;
     }
     if (!entry) return;
+    if (!worth) {
+      setError("Choose whether this purchase was worth it before saving.");
+      return;
+    }
     setBusy(true);
     setError("");
     try {
@@ -323,8 +327,14 @@ export function JournalPage({
             <Field label="Was it worth it?">
               <select
                 value={worth}
-                onChange={(event) => setWorth(event.target.value as Worth)}
+                onChange={(event) =>
+                  setWorth(event.target.value as Worth | "")
+                }
+                required
               >
+                <option value="" disabled>
+                  Choose an option
+                </option>
                 <option value="YES">Yes, it was worth it</option>
                 <option value="SOMEWHAT">Somewhat</option>
                 <option value="NO">No, not really</option>

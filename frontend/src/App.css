@@ -1249,7 +1249,7 @@ a {
 
 .transactions-table [data-slot="badge"] {
   border: 0;
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .need-badge,
@@ -1780,6 +1780,10 @@ a {
 .write-entry {
   height: 30px;
   font-size: 9px;
+}
+
+.chart-static {
+  pointer-events: none;
 }
 
 .write-entry svg {

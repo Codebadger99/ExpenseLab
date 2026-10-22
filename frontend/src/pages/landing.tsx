@@ -23,12 +23,12 @@ const previewBars = [
 ];
 
 const categorySpending = [
-  { name: "Food", amount: "₦76,600", value: 33, color: "var(--chart-1)" },
-  { name: "Transport", amount: "₦19,600", value: 9, color: "var(--chart-2)" },
-  { name: "Bills", amount: "₦31,700", value: 14, color: "var(--chart-3)" },
-  { name: "Shopping", amount: "₦7,900", value: 4, color: "var(--chart-4)" },
-  { name: "Health", amount: "₦19,800", value: 9, color: "var(--chart-5)" },
-  { name: "Entertainment", amount: "₦9,800", value: 5, color: "var(--chart-6)" },
+  { name: "Food", amount: "₦76,600", value: 33, color: "#128260" },
+  { name: "Transport", amount: "₦19,600", value: 9, color: "#80b39c" },
+  { name: "Bills", amount: "₦31,700", value: 14, color: "#b8cba7" },
+  { name: "Shopping", amount: "₦7,900", value: 4, color: "#dabd84" },
+  { name: "Health", amount: "₦19,800", value: 9, color: "#7c9291" },
+  { name: "Entertainment", amount: "₦9,800", value: 5, color: "#b4a5bd" },
 ];
 
 const transactions = [

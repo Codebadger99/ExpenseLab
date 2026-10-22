@@ -40,22 +40,23 @@ export function GoalsPage({
   const [target, setTarget] = useState("");
   const [amount, setAmount] = useState("");
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
+  const [formError, setFormError] = useState("");
+  const [pageError, setPageError] = useState("");
   const [deleting, setDeleting] = useState<Goal | null>(null);
 
   async function createGoal(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const validationError = getFormValidationError(event.currentTarget);
     if (validationError) {
-      setError(validationError);
+      setFormError(validationError);
       return;
     }
     if (!name.trim()) {
-      setError("Enter a name for this goal.");
+      setFormError("Enter a name for this goal.");
       return;
     }
     setBusy(true);
-    setError("");
+    setFormError("");
     try {
       await apiRequest("/goal", {
         method: "POST",
@@ -66,7 +67,7 @@ export function GoalsPage({
       setDialog(null);
       onSaved();
     } catch (reason) {
-      setError(getErrorMessage(reason));
+      setFormError(getErrorMessage(reason));
     } finally {
       setBusy(false);
     }
@@ -76,12 +77,12 @@ export function GoalsPage({
     event.preventDefault();
     const validationError = getFormValidationError(event.currentTarget);
     if (validationError) {
-      setError(validationError);
+      setFormError(validationError);
       return;
     }
     if (!selected) return;
     setBusy(true);
-    setError("");
+    setFormError("");
     try {
       await apiRequest(`/goal/${selected.id}`, {
         method: "PATCH",
@@ -92,7 +93,7 @@ export function GoalsPage({
       setSelected(null);
       onSaved();
     } catch (reason) {
-      setError(getErrorMessage(reason));
+      setFormError(getErrorMessage(reason));
     } finally {
       setBusy(false);
     }
@@ -101,13 +102,13 @@ export function GoalsPage({
   async function deleteGoal() {
     if (!deleting) return;
     setBusy(true);
-    setError("");
+    setPageError("");
     try {
       await apiRequest(`/goal/${deleting.id}`, { method: "DELETE" });
       setDeleting(null);
       onSaved();
     } catch (reason) {
-      setError(getErrorMessage(reason));
+      setPageError(getErrorMessage(reason));
     } finally {
       setBusy(false);
     }
@@ -128,7 +129,8 @@ export function GoalsPage({
             className="primary-action"
             onClick={() => {
               setDialog("new");
-              setError("");
+              setFormError("");
+              setPageError("");
             }}
           >
             <Plus size={15} /> New goal
@@ -136,9 +138,9 @@ export function GoalsPage({
         }
       />
       <h2 className="subsection-heading">Your savings goals</h2>
-      {error && (
+      {pageError && (
         <p className="form-error" role="alert">
-          {error}
+          {pageError}
         </p>
       )}
       {goals.length ? (
@@ -179,7 +181,8 @@ export function GoalsPage({
                     onClick={() => {
                       setSelected(goal);
                       setDialog("add");
-                      setError("");
+                      setFormError("");
+                      setPageError("");
                     }}
                   >
                     <Plus size={14} /> Add money
@@ -221,7 +224,7 @@ export function GoalsPage({
           if (!open) {
             setDialog(null);
             setSelected(null);
-            setError("");
+            setFormError("");
           }
         }}
       >
@@ -263,9 +266,9 @@ export function GoalsPage({
                 <CurrencyInput value={amount} onChange={setAmount} min={1} step={1} />
               </Field>
             )}
-            {error && (
+            {formError && (
               <p className="form-error" role="alert">
-                {error}
+                {formError}
               </p>
             )}
             <Button type="submit" disabled={busy} aria-busy={busy}>

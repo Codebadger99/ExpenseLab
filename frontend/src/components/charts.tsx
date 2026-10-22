@@ -175,16 +175,8 @@ export function CategoryDonutChart({
   return (
     <div className="category-pie-layout">
       <div className="category-pie-visual">
-        <ChartContainer config={config} className="category-pie-chart">
+        <ChartContainer config={config} className="chart-static category-pie-chart">
           <PieChart>
-            <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  nameKey="category"
-                  formatter={(value) => currency(Number(value))}
-                />
-              }
-            />
             <Pie
               data={data}
               dataKey="amount"
@@ -249,17 +241,9 @@ export function NeedsWantsChart({
     <div className="grid items-center gap-4 sm:grid-cols-[160px_1fr]">
       <ChartContainer
         config={config}
-        className="mx-auto h-[170px] w-full max-w-[170px]"
+        className="chart-static mx-auto h-[170px] w-full max-w-[170px]"
       >
         <PieChart>
-          <ChartTooltip
-            content={
-              <ChartTooltipContent
-                nameKey="name"
-                formatter={(value) => currency(Number(value))}
-              />
-            }
-          />
           <Pie
             data={data}
             dataKey="amount"
