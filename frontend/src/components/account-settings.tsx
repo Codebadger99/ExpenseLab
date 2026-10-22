@@ -1,6 +1,5 @@
-﻿import { useState, type FormEvent } from "react";
-import { LogOut, Settings2, Trash2 } from "lucide-react";
-import { useNavigate } from "react-router";
+import { useState, type FormEvent } from "react";
+import { AlertTriangle, LogOut, Settings2, Trash2 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import {
   Dialog,
@@ -11,39 +10,33 @@ import {
 } from "../../components/ui/dialog";
 import { Input } from "../../components/ui/input";
 import { apiRequest, getErrorMessage } from "../lib/api";
-import { getFormValidationError } from "../lib/form-validation";
 import { LoadingSpinner } from "./workspace-ui";
 
 export function AccountSettings({
-  email,
   onSignOut,
   onDeleted,
 }: {
-  email: string;
   onSignOut: () => void;
   onDeleted: () => void;
 }) {
-  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [password, setPassword] = useState("");
-  const [confirmed, setConfirmed] = useState(false);
+  const [confirmation, setConfirmation] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
   async function deleteAccount(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const validationError = getFormValidationError(event.currentTarget);
-    if (validationError) {
-      setError(validationError);
+    if (confirmation !== "DELETE") {
+      setError("Type DELETE exactly to confirm account deletion.");
       return;
     }
+
     setBusy(true);
     setError("");
     try {
       await apiRequest("/auth/account", {
         method: "DELETE",
-        body: { password },
       });
       onDeleted();
     } catch (reason) {
@@ -51,12 +44,6 @@ export function AccountSettings({
     } finally {
       setBusy(false);
     }
-  }
-
-  function resetPasswordBeforeDeleting() {
-    setDeleteOpen(false);
-    onSignOut();
-    navigate("/forgot-password", { state: { email } });
   }
 
   return (
@@ -115,18 +102,20 @@ export function AccountSettings({
         onOpenChange={(next) => {
           setDeleteOpen(next);
           if (!next) {
-            setPassword("");
-            setConfirmed(false);
+            setConfirmation("");
             setError("");
           }
         }}
       >
-        <DialogContent className="form-dialog">
+        <DialogContent className="form-dialog delete-account-dialog">
           <DialogHeader>
             <DialogTitle>Delete your account?</DialogTitle>
-            <DialogDescription>
-              This permanently deletes your account and its associated data.
-              Enter your current password and confirm to continue.
+            <DialogDescription className="delete-account-warning">
+              <AlertTriangle size={17} aria-hidden="true" />
+              <span>
+                This permanently deletes your account and all associated
+                financial data. This action cannot be undone.
+              </span>
             </DialogDescription>
           </DialogHeader>
           <form
@@ -135,34 +124,24 @@ export function AccountSettings({
             noValidate
           >
             <label className="form-field">
-              <span>Current password</span>
-              <Input
-                type="password"
-                autoComplete="current-password"
-                maxLength={128}
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                required
-              />
-            </label>
-            <label className="delete-confirmation">
-              <input
-                type="checkbox"
-                checked={confirmed}
-                onChange={(event) => setConfirmed(event.target.checked)}
-                required
-              />
               <span>
-                I understand this permanently deletes my account and data.
+                To confirm, type <strong>DELETE</strong> below
               </span>
+              <Input
+                className="delete-account-input"
+                autoComplete="off"
+                autoCapitalize="characters"
+                aria-label="Type DELETE to confirm account deletion"
+                placeholder="DELETE"
+                spellCheck={false}
+                value={confirmation}
+                onChange={(event) => {
+                  setConfirmation(event.target.value);
+                  setError("");
+                }}
+                required
+              />
             </label>
-            <button
-              className="delete-password-help"
-              type="button"
-              onClick={resetPasswordBeforeDeleting}
-            >
-              Forgot your password? Reset it first
-            </button>
             {error && (
               <p className="form-error" role="alert">
                 {error}
@@ -179,7 +158,8 @@ export function AccountSettings({
               <Button
                 type="submit"
                 variant="destructive"
-                disabled={busy || !confirmed || !password}
+                className="delete-account-submit"
+                disabled={busy || confirmation !== "DELETE"}
                 aria-busy={busy}
               >
                 {busy ? (

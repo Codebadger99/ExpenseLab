@@ -313,7 +313,6 @@ export function Workspace({
             </span>
           </div>
           <AccountSettings
-            email={user.email}
             onSignOut={onSignOut}
             onDeleted={onSignOut}
           />

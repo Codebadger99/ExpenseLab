@@ -189,20 +189,15 @@ async resetPassword(dto: ResetPasswordDto) {
 }
 
 
-async deleteAccount(userId: number, password: string) {
+
+async deleteAccount(userId: number) {
   const user = await this.prisma.user.findUnique({
     where: { id: userId },
-    select: {
-      id: true,
-      passwordHash: true,
-    },
+    select: { id: true },
   });
 
-  if (
-    !user ||
-    !(await bcrypt.compare(password, user.passwordHash))
-  ) {
-    throw new ForbiddenException('Incorrect password');
+  if (!user) {
+    throw new UnauthorizedException('User account not found');
   }
 
   await this.prisma.user.delete({

@@ -1,9 +1,17 @@
-import { Controller, Post, Body, Delete, UseGuards, HttpCode, HttpStatus, Req } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Delete,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
+  Req,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Register } from './dto/register.dto';
 import { Login } from './dto/login.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { DeleteAccountDto } from './dto/delete-password.dto';
 import { Throttle } from '@nestjs/throttler';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { CheckEmailDto } from './dto/check-email.dto';
@@ -11,18 +19,18 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @Post('register')
   @Throttle({ default: { limit: 5, ttl: 60_000 } })
   Register(@Body() register: Register) {
-    return this.authService.Register(register)
+    return this.authService.Register(register);
   }
 
   @Post('login')
   @Throttle({ default: { limit: 5, ttl: 60_000 } })
   Login(@Body() login: Login) {
-    return this.authService.Login(login)
+    return this.authService.Login(login);
   }
 
   @Post('check-email')
@@ -39,7 +47,6 @@ export class AuthController {
     return this.authService.forgotPassword(dto.email);
   }
 
-
   @Post('reset-password')
   @HttpCode(HttpStatus.OK)
   @Throttle({ default: { limit: 5, ttl: 600_000 } })
@@ -50,14 +57,7 @@ export class AuthController {
   @Delete('account')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
-  deleteAccount(
-    @Req() req: { user: { id: number } },
-    @Body() dto: DeleteAccountDto,
-  ) {
-    return this.authService.deleteAccount(
-      req.user.id,
-      dto.password,
-    );
+  deleteAccount(@Req() req: { user: { id: number } }) {
+    return this.authService.deleteAccount(req.user.id);
   }
-
 }

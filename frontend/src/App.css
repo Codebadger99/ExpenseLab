@@ -1990,6 +1990,39 @@ a {
   background: white;
 }
 
+.delete-account-dialog {
+  width: min(calc(100vw - 32px), 440px);
+  gap: 20px;
+}
+
+.delete-account-dialog [data-slot="dialog-title"] {
+  font-size: 19px;
+}
+
+.delete-account-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 4px;
+  padding: 12px;
+  border: 1px solid #f0d1cc;
+  border-radius: 10px;
+  background: #fff5f3;
+  color: #8f3e35 !important;
+  font-size: 12px !important;
+  line-height: 1.55 !important;
+}
+
+.delete-account-warning svg {
+  flex: 0 0 17px;
+  margin-top: 1px;
+  color: #b34e3d;
+}
+
+.delete-account-warning span {
+  min-width: 0;
+}
+
 .form-dialog [data-slot="dialog-title"] {
   color: var(--ink);
   font-size: 16px;
@@ -2133,6 +2166,37 @@ a {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+}
+
+.delete-account-input {
+  height: 42px !important;
+  border-color: #dfaaa2 !important;
+  font-size: 14px !important;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+}
+
+.delete-account-input:focus-visible {
+  border-color: #b34e3d !important;
+  box-shadow: 0 0 0 3px rgb(179 78 61 / 13%) !important;
+}
+
+.delete-account-submit {
+  border-color: #b43f35 !important;
+  background: #b43f35 !important;
+  color: #fff !important;
+}
+
+.delete-account-submit:hover:not(:disabled) {
+  border-color: #96352d !important;
+  background: #96352d !important;
+}
+
+.delete-account-submit:disabled {
+  border-color: #d9b3ae !important;
+  background: #d9b3ae !important;
+  color: #fff !important;
+  opacity: 0.65;
 }
 
 .notification-dialog {
@@ -3469,11 +3533,31 @@ a {
 :root[data-theme="dark"] .filters-row > select,
 :root[data-theme="dark"] .dialog-form select,
 :root[data-theme="dark"] .form-field > select,
+:root[data-theme="dark"] .delete-account-input,
 :root[data-theme="dark"] .search-field,
 :root[data-theme="dark"] .limit-input input {
   border-color: var(--line);
   background: #111b16;
   color: var(--ink);
+}
+
+:root[data-theme="dark"] .delete-account-warning {
+  border-color: #70413b;
+  background: #352522;
+  color: #f0b8ad !important;
+}
+
+:root[data-theme="dark"] .delete-account-warning svg {
+  color: #f28b7c;
+}
+
+:root[data-theme="dark"] .delete-account-input {
+  border-color: #80514a !important;
+}
+
+:root[data-theme="dark"] .delete-account-input:focus-visible {
+  border-color: #f28b7c !important;
+  box-shadow: 0 0 0 3px rgb(242 139 124 / 16%) !important;
 }
 
 :root[data-theme="dark"] .search-field,
