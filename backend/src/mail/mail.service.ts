@@ -19,10 +19,6 @@ export class MailService {
     });
   }
 
-  async verifyConnection() {
-    await this.transporter.verify();
-    return { message: 'SMTP connection verified successfully' };
-  }
 
   async sendResetCode(email: string, code: string) {
     return this.transporter.sendMail({
