@@ -30,6 +30,9 @@ export class UserController {
     @Req() req: { user: { id: number } },
     @Body() dto: UpdateMonthlyTrackAmountDto,
   ) {
-    return this.userService.updateMonthlyTrackAmount(req.user.id, dto.monthlyTrackAmount ?? null);
+    return this.userService.updateMonthlyTrackAmount(
+      req.user.id,
+      dto.monthlyTrackAmount ?? null,
+    );
   }
 }
