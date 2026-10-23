@@ -47,8 +47,8 @@ existing account. New accounts are guided through a short setup:
 
 If a password is forgotten, request a time-limited reset code by email and
 choose a new password. Email delivery requires SMTP settings on the backend.
-Account deletion is available in account settings and requires the current
-password.
+Account deletion is available in account settings. To confirm, type `DELETE`;
+the request uses your active sign-in session.
 
 ### Overview
 
@@ -96,13 +96,13 @@ for smaller viewports. Light and dark themes are available.
 
 ## Technology
 
-| Area | Technologies |
-| --- | --- |
-| Frontend | React, TypeScript, Vite, React Router, Tailwind CSS, Recharts |
-| Backend | NestJS, TypeScript, class-validator |
-| Data access | Prisma |
-| Database | PostgreSQL |
-| Authentication | JWT access tokens and bcrypt password hashing |
+| Area           | Technologies                                                  |
+| -------------- | ------------------------------------------------------------- |
+| Frontend       | React, TypeScript, Vite, React Router, Tailwind CSS, Recharts |
+| Backend        | NestJS, TypeScript, class-validator                           |
+| Data access    | Prisma                                                        |
+| Database       | PostgreSQL                                                    |
+| Authentication | JWT access tokens and bcrypt password hashing                 |
 
 ## Requirements
 
@@ -225,16 +225,16 @@ The frontend calls the backend REST API. Workspace endpoints are authenticated
 with the user's JWT; the API validates request DTOs and scopes financial records
 to the signed-in user.
 
-| Area | Routes |
-| --- | --- |
-| Authentication | `POST /auth/register`, `POST /auth/login`, `POST /auth/forgot-password`, `POST /auth/reset-password`, `DELETE /auth/account` |
-| Transactions | `GET /transaction`, `GET /transaction/:id`, `POST /transaction`, `PATCH /transaction/:id`, `DELETE /transaction/:id` |
-| Budgets | `GET /budget`, `PATCH /budget` |
-| Goals | `GET /goal`, `GET /goal/:id`, `POST /goal`, `PATCH /goal/:id`, `DELETE /goal/:id` |
-| Journal | `GET /journal`, `POST /journal`, `PATCH /journal/:id` |
-| Analytics | `GET /analytics/overview`, `GET /analytics/categories`, `GET /analytics/trends`, `GET /analytics/statistics`, `GET /analytics/needs-wants`, `GET /analytics/payment-methods`, `GET /analytics/merchants/top`, `GET /analytics/insights` |
-| Notifications | `GET /notifications`, `GET /notifications/unread-count`, `PATCH /notifications/read-all`, `PATCH /notifications/:id/read` |
-| User settings | `GET /users/me`, `PATCH /users/me/monthly-track-amount` |
+| Area           | Routes                                                                                                                                                                                                                                  |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Authentication | `POST /auth/register`, `POST /auth/login`, `POST /auth/forgot-password`, `POST /auth/reset-password`, `DELETE /auth/account`                                                                                                            |
+| Transactions   | `GET /transaction`, `GET /transaction/:id`, `POST /transaction`, `PATCH /transaction/:id`, `DELETE /transaction/:id`                                                                                                                    |
+| Budgets        | `GET /budget`, `PATCH /budget`                                                                                                                                                                                                          |
+| Goals          | `GET /goal`, `GET /goal/:id`, `POST /goal`, `PATCH /goal/:id`, `DELETE /goal/:id`                                                                                                                                                       |
+| Journal        | `GET /journal`, `POST /journal`, `PATCH /journal/:id`                                                                                                                                                                                   |
+| Analytics      | `GET /analytics/overview`, `GET /analytics/categories`, `GET /analytics/trends`, `GET /analytics/statistics`, `GET /analytics/needs-wants`, `GET /analytics/payment-methods`, `GET /analytics/merchants/top`, `GET /analytics/insights` |
+| Notifications  | `GET /notifications`, `GET /notifications/unread-count`, `PATCH /notifications/read-all`, `PATCH /notifications/:id/read`                                                                                                               |
+| User settings  | `GET /users/me`, `PATCH /users/me/monthly-track-amount`                                                                                                                                                                                 |
 
 Analytics routes accept a `month` query parameter in `YYYY-MM` format. The
 monthly overview and insights are calculated from the authenticated user's
